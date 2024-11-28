@@ -5,12 +5,20 @@ let friction = 0.9;
 let jumpStrength = -12;
 
 function setup() {
-  createCanvas(800, 700);
+  createCanvas(1879 , 1009);
 
   player = new Player();
 
   // Create platforms
-  platforms.push(new Platform(0, height - 50, width, 50)); // Ground
+  platforms.push(new Platform(0, height - 350, 250, 350)); // Ground
+  platforms.push(new Platform(250, height - 50, 150, 50));
+  platforms.push(new Platform(400, height - 350, 150, 350));
+  platforms.push(new Platform(550, height - 430, 150, 430));
+  platforms.push(new Platform(700, height - 550, 150, 550));
+  platforms.push(new Platform(850, height - 300, 150, 300));
+  platforms.push(new Platform(1000, height - 400, 150, 400));
+  platforms.push(new Platform(1150, height - 450, 150, 450));
+  platforms.push(new Platform(1300, height - 350, 580, 350));
 }
 
 function draw() {
@@ -40,7 +48,7 @@ function draw() {
 class Player {
   constructor() {
     this.x = 50;
-    this.y = height - 150;
+    this.y = height - 550;
     this.width = 50;
     this.height = 50;
     this.xSpeed = 0;
@@ -49,6 +57,7 @@ class Player {
   }
 
   update() {
+
     // Left and right movement
     if (keyIsDown(LEFT_ARROW)) {
       this.xSpeed = -5;
@@ -108,6 +117,7 @@ class Platform {
   }
 
   display() {
+    noStroke();
     fill(0, 255, 0);
     rect(this.x, this.y, this.width, this.height);
   }
