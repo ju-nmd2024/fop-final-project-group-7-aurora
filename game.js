@@ -14,7 +14,7 @@ function setup() {
   platforms.push(new Platform(250, height - 50, 150, 50));
   platforms.push(new Platform(400, height - 350, 150, 350));
   platforms.push(new Platform(550, height - 430, 150, 430));
-  platforms.push(new Platform(700, height - 550, 150, 550));
+  platforms.push(new Platform(700, height - 480, 150, 550));
   platforms.push(new Platform(850, height - 300, 150, 300));
   platforms.push(new Platform(1000, height - 400, 150, 400));
   platforms.push(new Platform(1150, height - 450, 150, 450));
@@ -44,12 +44,12 @@ function draw() {
   }
 }
 
-// Player class
+
 // Player class
 class Player {
   constructor() {
     this.x = 50;
-    this.y = height - 550;
+    this.y = height - 450;
     this.width = 50;
     this.height = 50;
     this.xSpeed = 0;
@@ -72,6 +72,11 @@ class Player {
 
     // Make sure the player stays within bounds horizontally
     this.x = constrain(this.x, 0, width - this.width);
+
+    // Make the player fall if it reaches x >= 250
+    if (this.x >= 250) {
+      this.onGround = false;
+    }
   }
 
   applyGravity() {
