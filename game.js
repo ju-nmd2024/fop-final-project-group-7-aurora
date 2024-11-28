@@ -26,6 +26,9 @@ function draw() {
     case "level3":
         drawLevel3();
         break;
+    case "aurora":
+      drawAurora();
+      break;
   }
 
   // Apply gravity to player
@@ -124,6 +127,19 @@ function setupLevel3() {
   player.y = height - 150;
 }
 
+
+function setupAurora() {
+  platforms = [];
+
+  platforms.push(new Platform(0, height - 300, width, 300));
+
+
+  // Reset player position
+  player.x = 25;
+  player.y = height - 150;
+}
+
+
 function drawLevel1() {
   player.applyGravity();
   player.update();
@@ -167,10 +183,27 @@ function drawLevel3() {
   }
   for (let platform of platforms) {
     player.checkCollision(platform);
+  }
+  if (player.x >= width-50 && player.y <= height - 910) {
+    gameState = "aurora";
+    setupAurora();
+  }
+}
+
+
+  function drawAurora() {
+    player.applyGravity();
+    player.update();
+    player.display();
+    for (let platform of platforms) {
+      platform.display();
+    }
+    for (let platform of platforms) {
+      player.checkCollision(platform);
+    }
 
   }
 
-}
 
 // Player class
 class Player {
