@@ -33,6 +33,9 @@ function draw() {
     case "level2":
       drawLevel2();
       break;
+    case "level3":
+        drawLevel3();
+        break;
   }
 
   // Apply gravity to player
@@ -101,6 +104,17 @@ function setupLevel2() {
   player.y = height - 450;
 }
 
+function setupLevel3() {
+  platforms = [];
+  //ground platforms
+  platforms.push(new Platform(0, height - 400, 250, 400));
+
+
+  // Reset player position
+  player.x = 50;
+  player.y = height - 450;
+}
+
 function drawLevel1() {
   player.applyGravity();
   player.update();
@@ -127,9 +141,24 @@ function drawLevel2() {
   for (let platform of platforms) {
     player.checkCollision(platform);
   }
-
+  if (player.x <= 200 && player.y <= height - 850) {
+    gameState = "level3";
+    setupLevel3();
+  }
 }
 
+function drawLevel3() {
+  player.applyGravity();
+  player.update();
+  player.display();
+  for (let platform of platforms) {
+    platform.display();
+  }
+  for (let platform of platforms) {
+    player.checkCollision(platform);
+  }
+
+}
 
 // Player class
 class Player {
@@ -141,6 +170,7 @@ class Player {
     this.xSpeed = 0;
     this.ySpeed = 0;
     this.onGround = false;
+    this.canDoubleJump = true; // Allow double jump
   }
 
   update() {
@@ -159,9 +189,10 @@ class Player {
     // Make sure the player stays within bounds horizontally
     this.x = constrain(this.x, 0, width - this.width);
 
-    // Troubleshooting: rectangle floats, doesn't fall down
-    // Make the player fall if it reaches x >= 250
-    if (this.x >= 250) {
+    // Make the player fall based on the game state
+    if (gameState === "level1" && this.x >= 250) {
+      this.onGround = false;
+    } else if (gameState === "level2" && this.x >= 200) {
       this.onGround = false;
     }
   }
@@ -176,6 +207,10 @@ class Player {
     if (this.onGround) {
       this.ySpeed = jumpStrength;
       this.onGround = false;
+      this.canDoubleJump = true; // Reset double jump
+    } else if (this.canDoubleJump) {
+      this.ySpeed = jumpStrength;
+      this.canDoubleJump = false; // Disable double jump after use
     }
   }
 
@@ -190,6 +225,7 @@ class Player {
       this.ySpeed = 0;
       this.y = platform.y - this.height; // Position player on top of the platform
       this.onGround = true;
+      this.canDoubleJump = true; // Reset double jump when landing
     }
 
     // Check for horizontal collision
