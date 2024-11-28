@@ -96,12 +96,32 @@ function setupLevel2() {
 
 function setupLevel3() {
   platforms = [];
-  // ground platforms
-  platforms.push(new Platform(0, height - 200, width, 200));
+
+  platforms.push(new Platform(0, height - 100, width, 200));
+  platforms.push(new Platform(0, height - 600, 800, 350));
+  platforms.push(new Platform(1179, height - 500, 800, 250));
+
+  //jumping platforms
+  platforms.push(new Platform(800, height - 280, 120, 30));
+  platforms.push(new Platform(1059, height - 350, 120, 30));
+  platforms.push(new Platform(800, height - 420, 120, 30));
+  platforms.push(new Platform(1059, height - 500, 120, 30));
+
+  platforms.push(new Platform(880, height - 630, 200, 50));
+  platforms.push(new Platform(830, height - 680, 200, 50));
+
+  platforms.push(new Platform(300, height - 800, 400, 50));
+  platforms.push(new Platform(390, height - 840, 310, 50));
+  platforms.push(new Platform(390, height - 840, 310, 50));
+  platforms.push(new Platform(470, height - 870, 230, 30));
+  platforms.push(new Platform(850, height - 910, 1100, 100));
+  platforms.push(new Platform(1600, height - 830, 300,  900));
+  platforms.push(new Platform(1400, height - 820, 200,  100));
+  platforms.push(new Platform(1150, height - 820, 300,  50));
 
   // Reset player position
   player.x = 25;
-  player.y = height - 250;
+  player.y = height - 150;
 }
 
 function drawLevel1() {
@@ -136,6 +156,8 @@ function drawLevel2() {
   }
 }
 
+
+
 function drawLevel3() {
   player.applyGravity();
   player.update();
@@ -145,6 +167,7 @@ function drawLevel3() {
   }
   for (let platform of platforms) {
     player.checkCollision(platform);
+
   }
 
 }
