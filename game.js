@@ -10,7 +10,7 @@ function setup() {
   player = new Player();
 
   // Create platforms
-  platforms.push(new Platform(0, height - 350, 250, 350)); // Ground
+  platforms.push(new Platform(0, height - 350, 250, 350));
   platforms.push(new Platform(250, height - 50, 150, 50));
   platforms.push(new Platform(400, height - 350, 150, 350));
   platforms.push(new Platform(550, height - 430, 150, 430));
@@ -45,6 +45,7 @@ function draw() {
 }
 
 // Player class
+// Player class
 class Player {
   constructor() {
     this.x = 50;
@@ -57,18 +58,17 @@ class Player {
   }
 
   update() {
-
     // Left and right movement
     if (keyIsDown(LEFT_ARROW)) {
       this.xSpeed = -5;
     } else if (keyIsDown(RIGHT_ARROW)) {
       this.xSpeed = 5;
     } else {
-      this.xSpeed = this.xSpeed * friction; // Slow down when no key is pressed
+      this.xSpeed *= friction; // Slow down when no key is pressed
     }
 
-    this.x = this.x + this.xSpeed;
-    this.y = this.y + this.ySpeed;
+    this.x += this.xSpeed;
+    this.y += this.ySpeed;
 
     // Make sure the player stays within bounds horizontally
     this.x = constrain(this.x, 0, width - this.width);
@@ -76,7 +76,7 @@ class Player {
 
   applyGravity() {
     if (!this.onGround) {
-      this.ySpeed = this.ySpeed + gravity; // Falling down
+      this.ySpeed += gravity; // Falling down
     }
   }
 
@@ -90,14 +90,29 @@ class Player {
   checkCollision(platform) {
     // Check if player is colliding with the platform
     if (
-      this.x + this.width > platform.x &&
-      this.x < platform.x + platform.width &&
-      this.y + this.height <= platform.y &&
-      this.y + this.height + this.ySpeed >= platform.y
+        this.x + this.width > platform.x &&
+        this.x < platform.x + platform.width &&
+        this.y + this.height <= platform.y &&
+        this.y + this.height + this.ySpeed >= platform.y
     ) {
       this.ySpeed = 0;
       this.y = platform.y - this.height; // Position player on top of the platform
       this.onGround = true;
+    }
+
+    // Check for horizontal collision
+    if (
+        this.x + this.width > platform.x &&
+        this.x < platform.x + platform.width &&
+        this.y + this.height > platform.y &&
+        this.y < platform.y + platform.height
+    ) {
+      if (this.xSpeed > 0) {
+        this.x = platform.x - this.width;
+      } else if (this.xSpeed < 0) {
+        this.x = platform.x + platform.width;
+      }
+      this.xSpeed = 0;
     }
   }
 
