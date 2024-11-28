@@ -1,7 +1,7 @@
 let player;
 let platforms = [];
 let gravity = 0.4;
-let friction = 0.95;
+let friction = 0.80;
 let jumpStrength = -10;
 let gameState = "level1"
 
@@ -11,16 +11,6 @@ function setup() {
   player = new Player();
   setupLevel1();
 
-  // Create platforms
-  platforms.push(new Platform(0, height - 350, 250, 350));
-  platforms.push(new Platform(250, height - 50, 150, 50));
-  platforms.push(new Platform(400, height - 350, 150, 350));
-  platforms.push(new Platform(550, height - 430, 150, 430));
-  platforms.push(new Platform(700, height - 480, 150, 550));
-  platforms.push(new Platform(850, height - 300, 150, 300));
-  platforms.push(new Platform(1000, height - 400, 150, 400));
-  platforms.push(new Platform(1150, height - 450, 150, 450));
-  platforms.push(new Platform(1300, height - 350, 580, 350));
 }
 
 function draw() {
@@ -106,13 +96,12 @@ function setupLevel2() {
 
 function setupLevel3() {
   platforms = [];
-  //ground platforms
-  platforms.push(new Platform(0, height - 400, 250, 400));
-
+  // ground platforms
+  platforms.push(new Platform(0, height - 200, width, 200));
 
   // Reset player position
-  player.x = 50;
-  player.y = height - 450;
+  player.x = 25;
+  player.y = height - 250;
 }
 
 function drawLevel1() {
@@ -141,7 +130,7 @@ function drawLevel2() {
   for (let platform of platforms) {
     player.checkCollision(platform);
   }
-  if (player.x <= 200 && player.y <= height - 850) {
+  if (player.x <= 50 && player.y <= height - 850) {
     gameState = "level3";
     setupLevel3();
   }
