@@ -1,16 +1,15 @@
 let player;
 let platforms = [];
 let gravity = 0.4;
-let friction = 0.80;
+let friction = 0.8;
 let jumpStrength = -10;
-let gameState = "level1"
+let gameState = "level1";
 
 function setup() {
-  createCanvas(1879 , 1009);
+  createCanvas(1879, 1009);
 
   player = new Player();
   setupLevel1();
-
 }
 
 function draw() {
@@ -24,8 +23,8 @@ function draw() {
       drawLevel2();
       break;
     case "level3":
-        drawLevel3();
-        break;
+      drawLevel3();
+      break;
     case "aurora":
       drawAurora();
       break;
@@ -50,7 +49,6 @@ function draw() {
     player.checkCollision(platform);
   }
 }
-
 
 function setupLevel1() {
   platforms = [];
@@ -77,9 +75,9 @@ function setupLevel2() {
   platforms.push(new Platform(960, height - 420, 130, 420));
   platforms.push(new Platform(1090, height - 460, 150, 460));
   platforms.push(new Platform(1240, height - 500, 110, 500));
-  platforms.push(new Platform(1350, height - 50,  150, 50));
-  platforms.push(new Platform(1500, height - 550,  150, 550));
-  platforms.push(new Platform(1650, height - 600,  230, 600));
+  platforms.push(new Platform(1350, height - 50, 150, 50));
+  platforms.push(new Platform(1500, height - 550, 150, 550));
+  platforms.push(new Platform(1650, height - 600, 230, 600));
 
   //floating platforms
   platforms.push(new Platform(0, height - 850, 400, 100));
@@ -118,27 +116,24 @@ function setupLevel3() {
   platforms.push(new Platform(390, height - 840, 310, 50));
   platforms.push(new Platform(470, height - 870, 230, 30));
   platforms.push(new Platform(850, height - 910, 1100, 100));
-  platforms.push(new Platform(1600, height - 830, 300,  900));
-  platforms.push(new Platform(1400, height - 820, 200,  100));
-  platforms.push(new Platform(1150, height - 820, 300,  50));
+  platforms.push(new Platform(1600, height - 830, 300, 900));
+  platforms.push(new Platform(1400, height - 820, 200, 100));
+  platforms.push(new Platform(1150, height - 820, 300, 50));
 
   // Reset player position
   player.x = 25;
   player.y = height - 150;
 }
-
 
 function setupAurora() {
   platforms = [];
 
   platforms.push(new Platform(0, height - 300, width, 300));
 
-
   // Reset player position
   player.x = 25;
   player.y = height - 150;
 }
-
 
 function drawLevel1() {
   player.applyGravity();
@@ -172,8 +167,6 @@ function drawLevel2() {
   }
 }
 
-
-
 function drawLevel3() {
   player.applyGravity();
   player.update();
@@ -184,26 +177,23 @@ function drawLevel3() {
   for (let platform of platforms) {
     player.checkCollision(platform);
   }
-  if (player.x >= width-50 && player.y <= height - 910) {
+  if (player.x >= width - 50 && player.y <= height - 910) {
     gameState = "aurora";
     setupAurora();
   }
 }
 
-
-  function drawAurora() {
-    player.applyGravity();
-    player.update();
-    player.display();
-    for (let platform of platforms) {
-      platform.display();
-    }
-    for (let platform of platforms) {
-      player.checkCollision(platform);
-    }
-
+function drawAurora() {
+  player.applyGravity();
+  player.update();
+  player.display();
+  for (let platform of platforms) {
+    platform.display();
   }
-
+  for (let platform of platforms) {
+    player.checkCollision(platform);
+  }
+}
 
 // Player class
 class Player {
@@ -232,7 +222,7 @@ class Player {
     this.y += this.ySpeed;
 
     // Make sure the player stays within bounds horizontally
-    this.x = constrain(this.x, 0, width - this.width);
+    // this.x = constrain(this.x, 0, width);
 
     // Make the player fall based on the game state
     if (gameState === "level1" && this.x >= 250) {
@@ -262,10 +252,10 @@ class Player {
   checkCollision(platform) {
     // Check if player is colliding with the platform
     if (
-        this.x + this.width > platform.x &&
-        this.x < platform.x + platform.width &&
-        this.y + this.height <= platform.y &&
-        this.y + this.height + this.ySpeed >= platform.y
+      this.x + this.width > platform.x &&
+      this.x < platform.x + platform.width &&
+      this.y + this.height <= platform.y &&
+      this.y + this.height + this.ySpeed >= platform.y
     ) {
       this.ySpeed = 0;
       this.y = platform.y - this.height; // Position player on top of the platform
@@ -275,10 +265,10 @@ class Player {
 
     // Check for horizontal collision
     if (
-        this.x + this.width > platform.x &&
-        this.x < platform.x + platform.width &&
-        this.y + this.height > platform.y &&
-        this.y < platform.y + platform.height
+      this.x + this.width > platform.x &&
+      this.x < platform.x + platform.width &&
+      this.y + this.height > platform.y &&
+      this.y < platform.y + platform.height
     ) {
       if (this.xSpeed > 0) {
         this.x = platform.x - this.width;
