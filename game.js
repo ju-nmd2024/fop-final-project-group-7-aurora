@@ -4,13 +4,15 @@ let gravity = 0.4;
 let friction = 0.8;
 let jumpStrength = -10;
 let gameState = "level1";
+let cam;
 
 function setup() {
-  createCanvas(1879, 1009, WEBGL);
+  createCanvas(1000, 720, WEBGL);
 
+  angleMode(DEGREES);
   cam = createCamera();
 
-  cam.lookAt(player, player);
+  cam.setPosition(650, 250, 800);
 
   player = new Player();
   setupLevel1();
@@ -65,6 +67,9 @@ function setupLevel1() {
   platforms.push(new Platform(1000, height - 400, 150, 400));
   platforms.push(new Platform(1150, height - 450, 150, 450));
   platforms.push(new Platform(1300, height - 350, 580, 350));
+
+  //Reset camera position
+  cam.setPosition(650, 250, 800);
 }
 
 function setupLevel2() {
@@ -97,6 +102,9 @@ function setupLevel2() {
   // Reset player position
   player.x = 50;
   player.y = height - 450;
+
+  //Reset camera position
+  cam.setPosition(650, 250, 800);
 }
 
 function setupLevel3() {
