@@ -6,7 +6,11 @@ let jumpStrength = -10;
 let gameState = "level1";
 
 function setup() {
-  createCanvas(1879, 1009);
+  createCanvas(1879, 1009, WEBGL);
+
+  cam = createCamera();
+
+  cam.lookAt(player, player);
 
   player = new Player();
   setupLevel1();
@@ -212,17 +216,16 @@ class Player {
     // Left and right movement
     if (keyIsDown(LEFT_ARROW)) {
       this.xSpeed = -5;
+      cam.move(-3, 0, 0);
     } else if (keyIsDown(RIGHT_ARROW)) {
       this.xSpeed = 5;
+      cam.move(3, 0, 0);
     } else {
       this.xSpeed *= friction; // Slow down when no key is pressed
     }
 
     this.x += this.xSpeed;
     this.y += this.ySpeed;
-
-    // Make sure the player stays within bounds horizontally
-    // this.x = constrain(this.x, 0, width);
 
     // Make the player fall based on the game state
     if (gameState === "level1" && this.x >= 250) {
