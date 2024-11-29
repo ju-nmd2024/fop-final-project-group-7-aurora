@@ -12,7 +12,7 @@ function setup() {
   angleMode(DEGREES);
   cam = createCamera();
 
-  cam.setPosition(650, 250, 800);
+  // cam.setPosition(0, 0, 800);
 
   player = new Player();
   setupLevel1();
@@ -54,6 +54,10 @@ function draw() {
   for (let platform of platforms) {
     player.checkCollision(platform);
   }
+
+  // camera
+  cam.setPosition(player.x, player.y, player.z + 800); // Adjust Z to maintain distance
+  cam.lookAt(player.x, player.y, player.z); // Camera always looks at the player
 }
 
 function setupLevel1() {
@@ -212,6 +216,7 @@ class Player {
   constructor() {
     this.x = 50;
     this.y = height - 450;
+    this.z = 0;
     this.width = 50;
     this.height = 50;
     this.xSpeed = 0;
