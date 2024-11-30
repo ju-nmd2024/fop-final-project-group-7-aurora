@@ -4,6 +4,7 @@ let gravity = 0.4;
 let friction = 0.8;
 let jumpStrength = -10;
 let gameState = "level1";
+
 let cam;
 
 function setup() {
@@ -14,12 +15,14 @@ function setup() {
 
   // cam.setPosition(0, 0, 800);
 
-  player = new Player();
+  player = new Player(0, 0);
   setupLevel1();
 }
 
 function draw() {
   background(135, 206, 250); // Sky color
+
+  translate(width / 2 - player.x, height / 2 - player.y);
 
   switch (gameState) {
     case "level1":
@@ -56,8 +59,8 @@ function draw() {
   }
 
   // camera
-  cam.setPosition(player.x, player.y, player.z + 800); // Adjust Z to maintain distance
-  cam.lookAt(player.x, player.y, player.z); // Camera always looks at the player
+  // cam.setPosition(player.x, player.y, player.z + 800); // Adjust Z to maintain distance
+  // cam.lookAt(player.x, player.y, player.z); // Camera always looks at the player
 }
 
 function setupLevel1() {
@@ -229,10 +232,8 @@ class Player {
     // Left and right movement
     if (keyIsDown(LEFT_ARROW)) {
       this.xSpeed = -5;
-      cam.move(-3, 0, 0);
     } else if (keyIsDown(RIGHT_ARROW)) {
       this.xSpeed = 5;
-      cam.move(3, 0, 0);
     } else {
       this.xSpeed *= friction; // Slow down when no key is pressed
     }
