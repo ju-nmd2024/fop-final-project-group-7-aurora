@@ -5,22 +5,15 @@ let friction = 0.8;
 let jumpStrength = -10;
 let gameState = "level1";
 
-let cam;
-
 function setup() {
-  createCanvas(700, 720, WEBGL);
-  // createCanvas(2200, 720);
+  createCanvas(1879, 1200);
 
-  cam = createCamera();
-
-  player = new Player(0, 0);
-  setupLevel1();
+  player = new Player();
+  setupLevel3();
 }
 
 function draw() {
   background(135, 206, 250); // Sky color
-
-  translate(width - player.x, height / 2 - player.y);
 
   switch (gameState) {
     case "level1":
@@ -55,94 +48,66 @@ function draw() {
   for (let platform of platforms) {
     player.checkCollision(platform);
   }
-
-  if (player.x >= platforms.x) {
-  }
-
-  // camera
-  // cam.setPosition(player.x, player.y, player.z + 800); // Adjust Z to maintain distance
-  // cam.lookAt(player.x, player.y, player.z); // Camera always looks at the player
 }
 
 function setupLevel1() {
   platforms = [];
-  platforms.push(new Platform(-100, height - 250, 320, 450, 20));
-  platforms.push(new Platform(420, height - 280, 180, 450));
-  platforms.push(new Platform(570, height - 360, 200, 530));
-  platforms.push(new Platform(760, height - 430, 170, 550));
-  platforms.push(new Platform(970, height - 550, 180, 40));
-  platforms.push(new Platform(1200, height - 400, 250, 450));
-  platforms.push(new Platform(1500, height - 500, 130, 40));
-  platforms.push(new Platform(1700, height - 550, 130, 40));
-  platforms.push(new Platform(1900, height - 400, 350, 450, 20));
-
-  //Reset camera position
-  cam.setPosition(width + 300, height - 400, 800);
+  platforms.push(new Platform(0, height - 250, 160, 350));
+  platforms.push(new Platform(300, height - 400, 160, 400));
+  platforms.push(new Platform(460, height - 475, 160, 475));
+  platforms.push(new Platform(620, height - 550, 160, 550));
+  platforms.push(new Platform(840, height - 700, 150, 50));
+  platforms.push(new Platform(1040, height - 600, 150, 50));
+  platforms.push(new Platform(1250, height - 600, 150, 50));
+  platforms.push(new Platform(1450, height - 700, 150, 50));
+  platforms.push(new Platform(1750, height - 750, 150, 50));
+  platforms.push(new Platform(1040, height - 450, 360, 450));
+  platforms.push(new Platform(1600, height - 450, 360, 450));
 }
 
 function setupLevel2() {
   platforms = [];
   //ground platforms
-  platforms.push(new Platform(0, height - 400, 250, 400));
-  platforms.push(new Platform(250, height - 500, 150, 500));
-  platforms.push(new Platform(400, height - 380, 130, 380));
-  platforms.push(new Platform(530, height - 300, 110, 300));
-  platforms.push(new Platform(640, height - 50, 220, 50));
-  platforms.push(new Platform(860, height - 300, 100, 300));
-  platforms.push(new Platform(960, height - 420, 130, 420));
-  platforms.push(new Platform(1090, height - 460, 150, 460));
-  platforms.push(new Platform(1240, height - 500, 110, 500));
-  platforms.push(new Platform(1350, height - 50, 150, 50));
-  platforms.push(new Platform(1500, height - 550, 150, 550));
-  platforms.push(new Platform(1650, height - 600, 230, 600));
-
-  //floating platforms
-  platforms.push(new Platform(0, height - 850, 400, 100));
-  platforms.push(new Platform(0, height - 750, 300, 50));
-  platforms.push(new Platform(0, height - 700, 120, 70));
-
-  platforms.push(new Platform(640, height - 800, 220, 80));
-  platforms.push(new Platform(695, height - 720, 110, 50));
-
-  platforms.push(new Platform(1300, height - 750, 300, 50));
-  platforms.push(new Platform(1200, height - 800, 350, 50));
+  platforms.push(new Platform(0, height - 500, 150, 50));
+  platforms.push(new Platform(0, height - 500, 150, 50));
+  platforms.push(new Platform(200, height - 300, 400, 400));
+  platforms.push(new Platform(750, height - 400, 200, 50));
+  platforms.push(new Platform(1300, height - 400, 250, 500));
+  platforms.push(new Platform(1730, height - 600, 150, 50));
+  platforms.push(new Platform(1350, height - 800, 250, 50));
+  platforms.push(new Platform(1250, height - 850, 250, 50));
+  platforms.push(new Platform(900, height - 750, 200, 50));
+  platforms.push(new Platform(500, height - 850, 150, 50));
+  platforms.push(new Platform(0, height - 900, 250, 50));
 
   // Reset player position
   player.x = 50;
-  player.y = height - 450;
-
-  //Reset camera position
-  cam.setPosition(width + 300, height - 400, 800);
+  player.y = height - 600;
 }
 
 function setupLevel3() {
   platforms = [];
 
-  platforms.push(new Platform(0, height - 100, width, 200));
-  platforms.push(new Platform(0, height - 600, 800, 350));
-  platforms.push(new Platform(1179, height - 500, 800, 250));
-
-  //jumping platforms
-  platforms.push(new Platform(800, height - 280, 120, 30));
-  platforms.push(new Platform(1059, height - 350, 120, 30));
-  platforms.push(new Platform(800, height - 420, 120, 30));
-  platforms.push(new Platform(1059, height - 500, 120, 30));
-
-  platforms.push(new Platform(880, height - 630, 200, 50));
-  platforms.push(new Platform(830, height - 680, 200, 50));
-
-  platforms.push(new Platform(300, height - 800, 400, 50));
-  platforms.push(new Platform(390, height - 840, 310, 50));
-  platforms.push(new Platform(390, height - 840, 310, 50));
-  platforms.push(new Platform(470, height - 870, 230, 30));
-  platforms.push(new Platform(850, height - 910, 1100, 100));
-  platforms.push(new Platform(1600, height - 830, 300, 900));
-  platforms.push(new Platform(1400, height - 820, 200, 100));
-  platforms.push(new Platform(1150, height - 820, 300, 50));
+  platforms.push(new Platform(1700, height - 100, 200, 200));
+  platforms.push(new Platform(1300, height - 30, 400, 200));
+  platforms.push(new Platform(1000, height - 950, 300, 950));
+  platforms.push(new Platform(1370, height - 200, 150, 50));
+  platforms.push(new Platform(1600, height - 850, 350, 500));
+  platforms.push(new Platform(1500, height - 400, 150, 50));
+  platforms.push(new Platform(1300, height - 550, 100, 50));
+  platforms.push(new Platform(1500, height - 750, 100, 50));
+  platforms.push(new Platform(850, height - 1000, 300, 50));
+  platforms.push(new Platform(500, height - 1100, 200, 50));
+  platforms.push(new Platform(150, height - 850, 250, 50));
+  platforms.push(new Platform(600, height - 650, 250, 50));
+  platforms.push(new Platform(250, height - 350, 250, 50));
+  platforms.push(new Platform(0, height - 100, 150, 1500));
+  platforms.push(new Platform(0, height - 100, 150, 1500));
+  platforms.push(new Platform(250, height - 50, 750, 1500));
 
   // Reset player position
-  player.x = 25;
-  player.y = height - 150;
+  player.x = 1780;
+  player.y = height - 250;
 }
 
 function setupAurora() {
@@ -181,7 +146,7 @@ function drawLevel2() {
   for (let platform of platforms) {
     player.checkCollision(platform);
   }
-  if (player.x <= 50 && player.y <= height - 850) {
+  if (player.x <= 50 && player.y <= height - 900) {
     gameState = "level3";
     setupLevel3();
   }
@@ -197,7 +162,7 @@ function drawLevel3() {
   for (let platform of platforms) {
     player.checkCollision(platform);
   }
-  if (player.x >= width - 50 && player.y <= height - 910) {
+  if (player.x <= 50 && player.y <= height - 300) {
     gameState = "aurora";
     setupAurora();
   }
@@ -220,7 +185,6 @@ class Player {
   constructor() {
     this.x = 50;
     this.y = height - 450;
-    this.z = 0;
     this.width = 50;
     this.height = 50;
     this.xSpeed = 0;
@@ -242,11 +206,16 @@ class Player {
     this.x += this.xSpeed;
     this.y += this.ySpeed;
 
+    // Make sure the player stays within bounds horizontally
+    // this.x = constrain(this.x, 0, width);
+
     // Make the player fall based on the game state
-    if (gameState === "level1" && this.x >= 250) {
+    if (gameState === "level1" && this.x >= 100) {
       this.onGround = false;
-    } else if (gameState === "level2" && this.x >= 200) {
+    } else if (gameState === "level2" && this.x >= 100) {
       this.onGround = false;
+    } else if (gameState === "level3" && this.x <= width) {
+        this.onGround = false;
     }
   }
 
@@ -315,7 +284,7 @@ class Platform {
   display() {
     noStroke();
     fill(48, 25, 52);
-    rect(this.x, this.y, this.width, this.height, 10);
+    rect(this.x, this.y, this.width, this.height);
   }
 }
 
