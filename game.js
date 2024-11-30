@@ -8,12 +8,10 @@ let gameState = "level1";
 let cam;
 
 function setup() {
-  createCanvas(1000, 720, WEBGL);
+  createCanvas(700, 720, WEBGL);
+  // createCanvas(2200, 720);
 
-  angleMode(DEGREES);
   cam = createCamera();
-
-  // cam.setPosition(0, 0, 800);
 
   player = new Player(0, 0);
   setupLevel1();
@@ -22,7 +20,7 @@ function setup() {
 function draw() {
   background(135, 206, 250); // Sky color
 
-  translate(width / 2 - player.x, height / 2 - player.y);
+  translate(width - player.x, height / 2 - player.y);
 
   switch (gameState) {
     case "level1":
@@ -58,6 +56,9 @@ function draw() {
     player.checkCollision(platform);
   }
 
+  if (player.x >= platforms.x) {
+  }
+
   // camera
   // cam.setPosition(player.x, player.y, player.z + 800); // Adjust Z to maintain distance
   // cam.lookAt(player.x, player.y, player.z); // Camera always looks at the player
@@ -65,18 +66,18 @@ function draw() {
 
 function setupLevel1() {
   platforms = [];
-  platforms.push(new Platform(0, height - 350, 250, 350));
-  platforms.push(new Platform(250, height - 50, 150, 50));
-  platforms.push(new Platform(400, height - 350, 150, 350));
-  platforms.push(new Platform(550, height - 430, 150, 430));
-  platforms.push(new Platform(700, height - 480, 150, 550));
-  platforms.push(new Platform(850, height - 300, 150, 300));
-  platforms.push(new Platform(1000, height - 400, 150, 400));
-  platforms.push(new Platform(1150, height - 450, 150, 450));
-  platforms.push(new Platform(1300, height - 350, 580, 350));
+  platforms.push(new Platform(-100, height - 250, 320, 450, 20));
+  platforms.push(new Platform(420, height - 280, 180, 450));
+  platforms.push(new Platform(570, height - 360, 200, 530));
+  platforms.push(new Platform(760, height - 430, 170, 550));
+  platforms.push(new Platform(970, height - 550, 180, 40));
+  platforms.push(new Platform(1200, height - 400, 250, 450));
+  platforms.push(new Platform(1500, height - 500, 130, 40));
+  platforms.push(new Platform(1700, height - 550, 130, 40));
+  platforms.push(new Platform(1900, height - 400, 350, 450, 20));
 
   //Reset camera position
-  cam.setPosition(650, 250, 800);
+  cam.setPosition(width + 300, height - 400, 800);
 }
 
 function setupLevel2() {
@@ -111,7 +112,7 @@ function setupLevel2() {
   player.y = height - 450;
 
   //Reset camera position
-  cam.setPosition(650, 250, 800);
+  cam.setPosition(width + 300, height - 400, 800);
 }
 
 function setupLevel3() {
@@ -313,8 +314,8 @@ class Platform {
 
   display() {
     noStroke();
-    fill(0, 255, 0);
-    rect(this.x, this.y, this.width, this.height);
+    fill(48, 25, 52);
+    rect(this.x, this.y, this.width, this.height, 10);
   }
 }
 
