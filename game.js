@@ -3,17 +3,13 @@ let platforms = [];
 let gravity = 0.8;
 let friction = 0.2;
 let jumpStrength = -15;
-let gameState = "level1";
-let prevpos = {
-  x: 0,
-  y: 0
-}
+let gameState = "level3";
 
 function setup() {
   createCanvas(1879, 1200);
 
   player = new Player();
-  setupLevel1();
+  setupLevel3();
 }
 
 function draw() {
@@ -52,12 +48,6 @@ function draw() {
 
   player.collisionAdjustAll(platforms);
 
-  prevpos = {
-    x: player.x,
-    y: player.y
-  }
-
-  console.log(player.isOnGround(platforms));
 }
 
 function setupLevel1() {
@@ -99,7 +89,7 @@ function setupLevel3() {
   platforms = [];
 
   platforms.push(new Platform(1700, height - 100, 200, 200));
-  platforms.push(new Platform(1300, height - 30, 400, 200));
+  platforms.push(new Platform(1300, height - 30, 400, 30));
   platforms.push(new Platform(1000, height - 950, 300, 950));
   platforms.push(new Platform(1370, height - 200, 150, 50));
   platforms.push(new Platform(1600, height - 850, 350, 500));
@@ -107,13 +97,15 @@ function setupLevel3() {
   platforms.push(new Platform(1300, height - 550, 100, 50));
   platforms.push(new Platform(1500, height - 750, 100, 50));
   platforms.push(new Platform(850, height - 1000, 300, 50));
+  platforms.push(new Platform(1150, height - 980, 50, 40));
+  platforms.push(new Platform(930, height - 950, 80, 50));
   platforms.push(new Platform(500, height - 1100, 200, 50));
   platforms.push(new Platform(150, height - 850, 250, 50));
   platforms.push(new Platform(600, height - 650, 250, 50));
   platforms.push(new Platform(250, height - 350, 250, 50));
   platforms.push(new Platform(0, height - 100, 150, 1500));
   platforms.push(new Platform(0, height - 100, 150, 1500));
-  platforms.push(new Platform(250, height - 50, 750, 1500));
+  platforms.push(new Platform(150, height - 30, 850, 30));
 
   // Reset player position
   player.x = 1780;
