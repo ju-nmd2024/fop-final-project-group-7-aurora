@@ -1,19 +1,19 @@
 let player;
 let platforms = [];
-let gravity = 0.4;
+let gravity = 0.8;
 let friction = 0.2;
-let jumpStrength = -10;
+let jumpStrength = -15;
 let gameState = "level1";
 let prevpos = {
-    x: 0,
-    y: 0
+  x: 0,
+  y: 0
 }
 
 function setup() {
   createCanvas(1879, 1200);
 
   player = new Player();
-  setupLevel3();
+  setupLevel1();
 }
 
 function draw() {
@@ -49,14 +49,15 @@ function draw() {
   }
 
   // Check for collision with platforms
-  for (let platform of platforms) {
-    player.checkCollision(platform);
-  }
+
+  player.collisionAdjustAll(platforms);
 
   prevpos = {
     x: player.x,
     y: player.y
   }
+
+  console.log(player.isOnGround(platforms));
 }
 
 function setupLevel1() {
@@ -117,6 +118,7 @@ function setupLevel3() {
   // Reset player position
   player.x = 1780;
   player.y = height - 250;
+  player.onGround = false;
 }
 
 function setupAurora() {
@@ -130,7 +132,7 @@ function setupAurora() {
 }
 
 function drawLevel1() {
-  player.applyGravity();
+  /*player.applyGravity();
   player.update();
   player.display();
   for (let platform of platforms) {
@@ -138,7 +140,7 @@ function drawLevel1() {
   }
   for (let platform of platforms) {
     player.checkCollision(platform);
-  }
+  }*/
   if (player.x >= 1800) {
     gameState = "level2";
     setupLevel2();
@@ -146,7 +148,7 @@ function drawLevel1() {
 }
 
 function drawLevel2() {
-  player.applyGravity();
+  /*player.applyGravity();
   player.update();
   player.display();
   for (let platform of platforms) {
@@ -154,7 +156,7 @@ function drawLevel2() {
   }
   for (let platform of platforms) {
     player.checkCollision(platform);
-  }
+  }*/
   if (player.x <= 50 && player.y <= height - 900) {
     gameState = "level3";
     setupLevel3();
@@ -162,7 +164,7 @@ function drawLevel2() {
 }
 
 function drawLevel3() {
-  player.applyGravity();
+  /*player.applyGravity();
   player.update();
   player.display();
   for (let platform of platforms) {
@@ -170,7 +172,7 @@ function drawLevel3() {
   }
   for (let platform of platforms) {
     player.checkCollision(platform);
-  }
+  }*/
   if (player.x <= 50 && player.y <= height - 300) {
     gameState = "aurora";
     setupAurora();
@@ -178,7 +180,7 @@ function drawLevel3() {
 }
 
 function drawAurora() {
-  player.applyGravity();
+  /*player.applyGravity();
   player.update();
   player.display();
   for (let platform of platforms) {
@@ -186,7 +188,7 @@ function drawAurora() {
   }
   for (let platform of platforms) {
     player.checkCollision(platform);
-  }
+  }*/
 }
 
 // Player class
@@ -204,31 +206,31 @@ class Player {
 
   update() {
     // Left and right movement
-      switch (true) {
-        case keyIsDown(LEFT_ARROW):
-          this.xSpeed = -5;
-          break;
-        case keyIsDown(RIGHT_ARROW):
-          this.xSpeed = 5;
-          break;
-        default:
-          switch (true) {
-            case this.xSpeed > 0:
-                if (this.xSpeed > friction) {
-                    this.xSpeed -= friction;
-                } else {
-                    this.xSpeed = 0;
-                }
-                break;
-            case this.xSpeed < 0:
-              if (- this.xSpeed > friction) {
-                this.xSpeed += friction;
-              } else {
-                this.xSpeed = 0;
-              }
-              break;
-          }
-      }
+    switch (true) {
+      case keyIsDown(LEFT_ARROW):
+        this.xSpeed = -5;
+        break;
+      case keyIsDown(RIGHT_ARROW):
+        this.xSpeed = 5;
+        break;
+      default:
+        switch (true) {
+          case this.xSpeed > 0:
+            if (this.xSpeed > friction) {
+              this.xSpeed -= friction;
+            } else {
+              this.xSpeed = 0;
+            }
+            break;
+          case this.xSpeed < 0:
+            if (- this.xSpeed > friction) {
+              this.xSpeed += friction;
+            } else {
+              this.xSpeed = 0;
+            }
+            break;
+        }
+    }
 
 
 
@@ -239,13 +241,13 @@ class Player {
     // this.x = constrain(this.x, 0, width);
 
     // Make the player fall based on the game state
-    if (gameState === "level1" && this.x >= 100) {
+    /*if (gameState === "level1" && this.x >= 100) {
       this.onGround = false;
     } else if (gameState === "level2" && this.x >= 100) {
       this.onGround = false;
     } else if (gameState === "level3" && this.x <= width) {
-        this.onGround = false;
-    }
+      this.onGround = false;
+    }*/
   }
 
   applyGravity() {
@@ -265,38 +267,61 @@ class Player {
     }
   }
 
-  checkCollision(platform) {
-
-    if (isOverlapping(this.x, this.y, this.width, this.height, platform.x, platform.y, platform.width, platform.height)) {
-      let overlap = {
-        left: this.x + this.width - platform.x,
-        right: platform.x + platform.width - this.x,
-        top: this.y + this.height - platform.y,
-        bottom: platform.y + platform.height - this.y
-      }
-
-      // position adjustment
-      switch (Math.min(overlap.left, overlap.right, overlap.top, overlap.left)) { // the smallest overlap shows the most probable side
-        case overlap.left:
-          this.x -= overlap.left;
-          break;
-        case overlap.right:
-          this.x += overlap.right;
-          break;
-        case overlap.top:
-          this.y -= overlap.top;
-          break;
-        case overlap.bottom:
-          this.y += overlap.bottom;
-          break;
-      }
-      if (this.y + this.height === platform.y) {
-        this.onGround = true;
-        this.ySpeed = 0;
-        this.xSpeed = 0;
-        this.canDoubleJump = true; // Reset double jump when landing
-      }
+  groundReset(platforms) {
+    if (this.isOnGround(platforms)) {
+      this.onGround = true;
+      this.ySpeed = 0;
+      this.xSpeed = 0;
+      this.canDoubleJump = true; // Reset double jump when landing
+    } else {
+      this.onGround = false;
     }
+
+  }
+
+  collisionAdjustAll(platforms) {
+    for (let platform of platforms) {
+      if (this.checkCollision(platform)) this.collisionAdjust(platform);
+    }
+    this.groundReset(platforms);
+  }
+
+  isOnGround(platforms) {
+    for (let platform of platforms) {
+      if (this.y + this.height === platform.y && this.x + this.width > platform.x && this.x < platform.x + platform.width) return true;
+    }
+    return false;
+  }
+
+  collisionAdjust(platform) {
+    let overlap = {
+      left: this.x + this.width - platform.x,
+      right: platform.x + platform.width - this.x,
+      top: this.y + this.height - platform.y,
+      bottom: platform.y + platform.height - this.y
+    }
+
+    let minOverlap = Math.min(overlap.left, overlap.right, overlap.top, overlap.bottom)
+
+    // position adjustment
+    switch (minOverlap) { // the smallest overlap shows the most probable side
+      case overlap.left:
+        this.x -= overlap.left;
+        break;
+      case overlap.right:
+        this.x += overlap.right;
+        break;
+      case overlap.top:
+        this.y -= overlap.top;
+        break;
+      case overlap.bottom:
+        this.y += overlap.bottom;
+        break;
+    }
+  }
+
+  checkCollision(platform) {
+    return isOverlapping(this.x, this.y, this.width, this.height, platform.x, platform.y, platform.width, platform.height);
 
     /**
      * Check if two rectangles are overlapping
@@ -319,6 +344,8 @@ class Player {
       );
     }
   }
+
+
 
   display() {
     fill(255, 0, 0);
@@ -349,5 +376,3 @@ function keyPressed() {
     player.jump();
   }
 }
-
-
