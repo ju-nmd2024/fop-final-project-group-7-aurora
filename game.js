@@ -3,7 +3,7 @@ let platforms = [];
 let gravity = 0.8;
 let friction = 0.2;
 let jumpStrength = -15;
-let gameState = "Level 3";
+let gameState = "Level 1";
 let levels = new Map();
 
 
@@ -280,10 +280,8 @@ class Player {
       bottom: platform.y + platform.height - this.y
     }
 
-    let minOverlap = Math.min(overlap.left, overlap.right, overlap.top, overlap.bottom)
-
     // position adjustment
-    switch (minOverlap) { // the smallest overlap shows the most probable side
+    switch (Math.min(overlap.left, overlap.right, overlap.top, overlap.bottom)) { // the smallest overlap shows the most probable side
       case overlap.left:
         this.x -= overlap.left;
         break;
@@ -324,6 +322,16 @@ class Player {
     }
   }
 
+  /**
+   *
+   * @param borders {{left: number, right: number, top: number, bottom: number}}
+   */
+  borderAdjust(borders) {
+    if (this.x < borders.left) this.x = borders.left;
+    if (this.x + this.width > borders.right) this.x = borders.right - this.width;
+    if (this.y < borders.top) this.y = borders.top;
+    if (this.y + this.height > borders.bottom) this.y = borders.bottom - this.height;
+  }
 
   display() {
     fill(255, 0, 0);
@@ -398,6 +406,8 @@ class Level {
         element.display();
       }
     }
+
+    player.borderAdjust(this.borders);
 
     // Check for collision with platforms
     player.collisionAdjustAll(this.elements.platforms);
