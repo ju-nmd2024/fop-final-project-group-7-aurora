@@ -1,9 +1,13 @@
 let player;
 let platforms = [];
 let gravity = 0.4;
-let friction = 0.8;
+let friction = 0.2;
 let jumpStrength = -10;
 let gameState = "level1";
+let prevpos = {
+    x: 0,
+    y: 0
+}
 
 function setup() {
   createCanvas(1879, 1200);
@@ -47,6 +51,11 @@ function draw() {
   // Check for collision with platforms
   for (let platform of platforms) {
     player.checkCollision(platform);
+  }
+
+  prevpos = {
+    x: player.x,
+    y: player.y
   }
 }
 
@@ -195,13 +204,33 @@ class Player {
 
   update() {
     // Left and right movement
-    if (keyIsDown(LEFT_ARROW)) {
-      this.xSpeed = -5;
-    } else if (keyIsDown(RIGHT_ARROW)) {
-      this.xSpeed = 5;
-    } else {
-      this.xSpeed *= friction; // Slow down when no key is pressed
-    }
+      switch (true) {
+        case keyIsDown(LEFT_ARROW):
+          this.xSpeed = -5;
+          break;
+        case keyIsDown(RIGHT_ARROW):
+          this.xSpeed = 5;
+          break;
+        default:
+          switch (true) {
+            case this.xSpeed > 0:
+                if (this.xSpeed > friction) {
+                    this.xSpeed -= friction;
+                } else {
+                    this.xSpeed = 0;
+                }
+                break;
+            case this.xSpeed < 0:
+              if (- this.xSpeed > friction) {
+                this.xSpeed += friction;
+              } else {
+                this.xSpeed = 0;
+              }
+              break;
+          }
+      }
+
+
 
     this.x += this.xSpeed;
     this.y += this.ySpeed;
@@ -237,32 +266,57 @@ class Player {
   }
 
   checkCollision(platform) {
-    // Check if player is colliding with the platform
-    if (
-      this.x + this.width > platform.x &&
-      this.x < platform.x + platform.width &&
-      this.y + this.height <= platform.y &&
-      this.y + this.height + this.ySpeed >= platform.y
-    ) {
-      this.ySpeed = 0;
-      this.y = platform.y - this.height; // Position player on top of the platform
-      this.onGround = true;
-      this.canDoubleJump = true; // Reset double jump when landing
+
+    if (isOverlapping(this.x, this.y, this.width, this.height, platform.x, platform.y, platform.width, platform.height)) {
+      let overlap = {
+        left: this.x + this.width - platform.x,
+        right: platform.x + platform.width - this.x,
+        top: this.y + this.height - platform.y,
+        bottom: platform.y + platform.height - this.y
+      }
+
+      // position adjustment
+      switch (Math.min(overlap.left, overlap.right, overlap.top, overlap.left)) { // the smallest overlap shows the most probable side
+        case overlap.left:
+          this.x -= overlap.left;
+          break;
+        case overlap.right:
+          this.x += overlap.right;
+          break;
+        case overlap.top:
+          this.y -= overlap.top;
+          break;
+        case overlap.bottom:
+          this.y += overlap.bottom;
+          break;
+      }
+      if (this.y + this.height === platform.y) {
+        this.onGround = true;
+        this.ySpeed = 0;
+        this.xSpeed = 0;
+        this.canDoubleJump = true; // Reset double jump when landing
+      }
     }
 
-    // Check for horizontal collision
-    if (
-      this.x + this.width > platform.x &&
-      this.x < platform.x + platform.width &&
-      this.y + this.height > platform.y &&
-      this.y < platform.y + platform.height
-    ) {
-      if (this.xSpeed > 0) {
-        this.x = platform.x - this.width;
-      } else if (this.xSpeed < 0) {
-        this.x = platform.x + platform.width;
-      }
-      this.xSpeed = 0;
+    /**
+     * Check if two rectangles are overlapping
+     * @param x1 {number} the x position of the first rectangle
+     * @param y1 {number} the y position of the first rectangle
+     * @param w1 {number} the width of the first rectangle
+     * @param h1 {number} the height of the first rectangle
+     * @param x2 {number} the x position of the second rectangle
+     * @param y2 {number} the y position of the second rectangle
+     * @param w2 {number} the width of the second rectangle
+     * @param h2 {number} the height of the second rectangle
+     * @returns {boolean}
+     */
+    function isOverlapping(x1, y1, w1, h1, x2, y2, w2, h2) {
+      return (
+          x1 < x2 + w2 &&
+          x1 + w1 > x2 &&
+          y1 < y2 + h2 &&
+          y1 + h1 > y2
+      );
     }
   }
 
@@ -295,3 +349,5 @@ function keyPressed() {
     player.jump();
   }
 }
+
+
