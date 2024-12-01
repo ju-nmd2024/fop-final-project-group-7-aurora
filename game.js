@@ -3,184 +3,181 @@ let platforms = [];
 let gravity = 0.8;
 let friction = 0.2;
 let jumpStrength = -15;
-let gameState = "level3";
+let gameState = "Level 3";
+let levels = new Map();
+
 
 function setup() {
   createCanvas(1879, 1200);
 
   player = new Player();
-  setupLevel3();
+
+  levels.set("Level 1", new Level("Level 1",
+      {
+        platforms: [
+            new Platform(0, height - 250, 160, 350),
+            new Platform(300, height - 400, 160, 400),
+            new Platform(460, height - 475, 160, 475),
+            new Platform(620, height - 550, 160, 550),
+            new Platform(840, height - 700, 150, 50),
+            new Platform(1040, height - 600, 150, 50),
+            new Platform(1250, height - 600, 150, 50),
+            new Platform(1450, height - 700, 150, 50),
+            new Platform(1750, height - 750, 150, 50),
+            new Platform(1040, height - 450, 360, 450),
+            new Platform(1600, height - 450, 360, 450)
+        ],
+        spikes: [
+            //needs spike class
+        ],
+        enemies: [
+          //needs enemy class
+        ]
+      }, {
+        left: 0,
+        right: width,
+        top: 0,
+        bottom: height
+      },
+      {
+        x: 50,
+        y: height - 450
+      },
+      {
+        x: 0,
+        y: 0
+      }, {
+        name: "Level 2",
+        condition: () => player.x >= 1800
+      }
+
+    ))
+
+  levels.set("Level 2", new Level("Level 2",
+      {
+        platforms: [
+          new Platform(0, height - 500, 150, 50),
+          new Platform(0, height - 500, 150, 50),
+          new Platform(200, height - 300, 400, 400),
+          new Platform(750, height - 400, 200, 50),
+          new Platform(1300, height - 400, 250, 500),
+          new Platform(1730, height - 600, 150, 50),
+          new Platform(1350, height - 800, 250, 50),
+          new Platform(1250, height - 850, 250, 50),
+          new Platform(900, height - 750, 200, 50),
+          new Platform(500, height - 850, 150, 50),
+          new Platform(0, height - 900, 250, 50)
+        ],
+        spikes: [
+          //needs spike class
+        ],
+        enemies: [
+          //needs enemy class
+        ]
+      }, {
+        left: 0,
+        right: width,
+        top: 0,
+        bottom: height
+      },
+      {
+        x: 50,
+        y: height - 600
+      },
+      {
+        x: 0,
+        y: 0
+      }, {
+        name: "Level 3",
+        condition: () => player.x <= 50 && player.y <= height - 900
+      }
+
+  ))
+
+  levels.set("Level 3", new Level("Level 3",
+      {
+        platforms: [
+          new Platform(1700, height - 100, 200, 200),
+          new Platform(1300, height - 30, 400, 30),
+          new Platform(1000, height - 950, 300, 950),
+          new Platform(1370, height - 200, 150, 50),
+          new Platform(1600, height - 850, 350, 500),
+          new Platform(1500, height - 400, 150, 50),
+          new Platform(1300, height - 550, 100, 50),
+          new Platform(1500, height - 750, 100, 50),
+          new Platform(850, height - 1000, 300, 50),
+          new Platform(1150, height - 980, 50, 40),
+          new Platform(930, height - 950, 80, 50),
+          new Platform(500, height - 1100, 200, 50),
+          new Platform(150, height - 850, 250, 50),
+          new Platform(600, height - 650, 250, 50),
+          new Platform(250, height - 350, 250, 50),
+          new Platform(0, height - 100, 150, 1500),
+          new Platform(150, height - 30, 850, 30)
+
+        ],
+        spikes: [
+          //needs spike class
+        ],
+        enemies: [
+          //needs enemy class
+        ]
+      }, {
+        left: 0,
+        right: width,
+        top: 0,
+        bottom: height
+      },
+      {
+        x: 1780,
+        y: height - 250
+      },
+      {
+        x: 0,
+        y: 0
+      }, {
+        name: "Aurora",
+        condition: () => player.x <= 20 && player.y <= height - 100
+      }
+
+  ))
+
+  levels.set("Aurora", new Level("Aurora",
+      {
+        platforms: [
+          new Platform(0, height - 300, width, 300)
+        ],
+        spikes: [
+          //needs spike class
+        ],
+        enemies: [
+          //needs enemy class
+        ]
+      }, {
+        left: 0,
+        right: width,
+        top: 0,
+        bottom: height
+      },
+      {
+        x: width - 100,
+        y: height - 380
+      },
+      {
+        x: 0,
+        y: 0
+      }
+
+  ))
+  levels.get(gameState).setup()
+
 }
 
 function draw() {
   background(135, 206, 250); // Sky color
+  console.log(gameState);
+  levels.get(gameState).draw();
 
-  switch (gameState) {
-    case "level1":
-      drawLevel1();
-      break;
-    case "level2":
-      drawLevel2();
-      break;
-    case "level3":
-      drawLevel3();
-      break;
-    case "aurora":
-      drawAurora();
-      break;
-  }
-
-  // Apply gravity to player
-  player.applyGravity();
-
-  // Move player
-  player.update();
-
-  // Display player
-  player.display();
-
-  // Display platforms
-  for (let platform of platforms) {
-    platform.display();
-  }
-
-  // Check for collision with platforms
-
-  player.collisionAdjustAll(platforms);
-
-}
-
-function setupLevel1() {
-  platforms = [];
-  platforms.push(new Platform(0, height - 250, 160, 350));
-  platforms.push(new Platform(300, height - 400, 160, 400));
-  platforms.push(new Platform(460, height - 475, 160, 475));
-  platforms.push(new Platform(620, height - 550, 160, 550));
-  platforms.push(new Platform(840, height - 700, 150, 50));
-  platforms.push(new Platform(1040, height - 600, 150, 50));
-  platforms.push(new Platform(1250, height - 600, 150, 50));
-  platforms.push(new Platform(1450, height - 700, 150, 50));
-  platforms.push(new Platform(1750, height - 750, 150, 50));
-  platforms.push(new Platform(1040, height - 450, 360, 450));
-  platforms.push(new Platform(1600, height - 450, 360, 450));
-}
-
-function setupLevel2() {
-  platforms = [];
-  //ground platforms
-  platforms.push(new Platform(0, height - 500, 150, 50));
-  platforms.push(new Platform(0, height - 500, 150, 50));
-  platforms.push(new Platform(200, height - 300, 400, 400));
-  platforms.push(new Platform(750, height - 400, 200, 50));
-  platforms.push(new Platform(1300, height - 400, 250, 500));
-  platforms.push(new Platform(1730, height - 600, 150, 50));
-  platforms.push(new Platform(1350, height - 800, 250, 50));
-  platforms.push(new Platform(1250, height - 850, 250, 50));
-  platforms.push(new Platform(900, height - 750, 200, 50));
-  platforms.push(new Platform(500, height - 850, 150, 50));
-  platforms.push(new Platform(0, height - 900, 250, 50));
-
-  // Reset player position
-  player.x = 50;
-  player.y = height - 600;
-}
-
-function setupLevel3() {
-  platforms = [];
-
-  platforms.push(new Platform(1700, height - 100, 200, 200));
-  platforms.push(new Platform(1300, height - 30, 400, 30));
-  platforms.push(new Platform(1000, height - 950, 300, 950));
-  platforms.push(new Platform(1370, height - 200, 150, 50));
-  platforms.push(new Platform(1600, height - 850, 350, 500));
-  platforms.push(new Platform(1500, height - 400, 150, 50));
-  platforms.push(new Platform(1300, height - 550, 100, 50));
-  platforms.push(new Platform(1500, height - 750, 100, 50));
-  platforms.push(new Platform(850, height - 1000, 300, 50));
-  platforms.push(new Platform(1150, height - 980, 50, 40));
-  platforms.push(new Platform(930, height - 950, 80, 50));
-  platforms.push(new Platform(500, height - 1100, 200, 50));
-  platforms.push(new Platform(150, height - 850, 250, 50));
-  platforms.push(new Platform(600, height - 650, 250, 50));
-  platforms.push(new Platform(250, height - 350, 250, 50));
-  platforms.push(new Platform(0, height - 100, 150, 1500));
-  platforms.push(new Platform(0, height - 100, 150, 1500));
-  platforms.push(new Platform(150, height - 30, 850, 30));
-
-  // Reset player position
-  player.x = 1780;
-  player.y = height - 250;
-  player.onGround = false;
-}
-
-function setupAurora() {
-  platforms = [];
-
-  platforms.push(new Platform(0, height - 300, width, 300));
-
-  // Reset player position
-  player.x = 25;
-  player.y = height - 150;
-}
-
-function drawLevel1() {
-  /*player.applyGravity();
-  player.update();
-  player.display();
-  for (let platform of platforms) {
-    platform.display();
-  }
-  for (let platform of platforms) {
-    player.checkCollision(platform);
-  }*/
-  if (player.x >= 1800) {
-    gameState = "level2";
-    setupLevel2();
-  }
-}
-
-function drawLevel2() {
-  /*player.applyGravity();
-  player.update();
-  player.display();
-  for (let platform of platforms) {
-    platform.display();
-  }
-  for (let platform of platforms) {
-    player.checkCollision(platform);
-  }*/
-  if (player.x <= 50 && player.y <= height - 900) {
-    gameState = "level3";
-    setupLevel3();
-  }
-}
-
-function drawLevel3() {
-  /*player.applyGravity();
-  player.update();
-  player.display();
-  for (let platform of platforms) {
-    platform.display();
-  }
-  for (let platform of platforms) {
-    player.checkCollision(platform);
-  }*/
-  if (player.x <= 50 && player.y <= height - 300) {
-    gameState = "aurora";
-    setupAurora();
-  }
-}
-
-function drawAurora() {
-  /*player.applyGravity();
-  player.update();
-  player.display();
-  for (let platform of platforms) {
-    platform.display();
-  }
-  for (let platform of platforms) {
-    player.checkCollision(platform);
-  }*/
 }
 
 // Player class
@@ -229,17 +226,7 @@ class Player {
     this.x += this.xSpeed;
     this.y += this.ySpeed;
 
-    // Make sure the player stays within bounds horizontally
-    // this.x = constrain(this.x, 0, width);
 
-    // Make the player fall based on the game state
-    /*if (gameState === "level1" && this.x >= 100) {
-      this.onGround = false;
-    } else if (gameState === "level2" && this.x >= 100) {
-      this.onGround = false;
-    } else if (gameState === "level3" && this.x <= width) {
-      this.onGround = false;
-    }*/
   }
 
   applyGravity() {
@@ -338,7 +325,6 @@ class Player {
   }
 
 
-
   display() {
     fill(255, 0, 0);
     rect(this.x, this.y, this.width, this.height);
@@ -366,5 +352,66 @@ function keyPressed() {
   if (keyCode === 32) {
     // Space bar
     player.jump();
+  }
+}
+
+/**
+ * Level object
+ * @property {string} name - The name of the level
+ * @property {{platforms?: Platform[], spikes?: Spike[], enemies?: Enemy[]}} elements - The elements of the level
+ * @property {{left?: number, right?: number, top?: number, bottom?: number}} borders - The borders of the level
+ * @property {{name: string, condition: function}} nextLevel - The next level
+ * @property {{x: number, y: number}} playerPosition - The player position
+ * @property {{x: number, y: number}} cameraPosition - The camera position
+ */
+class Level {
+  name;
+  elements;
+  borders;
+  playerPosition;
+  cameraPosition;
+  nextLevel;
+
+  constructor(name, elements, borders, playerPosition, cameraPosition, nextLevel = null) {
+    this.name = name;
+    this.elements = elements;
+    this.borders = borders;
+    this.playerPosition = playerPosition;
+    this.cameraPosition = cameraPosition;
+    this.nextLevel = nextLevel;
+
+
+  }
+  draw(){
+// Apply gravity to player
+    player.applyGravity();
+
+    // Move player
+    player.update();
+
+    // Display player
+    player.display();
+
+    // Display the elements (platforms, enemies etc.)
+    for (const elements in this.elements) {
+      if(this.elements[elements] instanceof Array) for (let element of this.elements[elements]) {
+        element.display();
+      }
+    }
+
+    // Check for collision with platforms
+    player.collisionAdjustAll(this.elements.platforms);
+
+    if (this.nextLevel !== null && this.nextLevel.condition()) {
+      gameState = this.nextLevel.name;
+      levels.get(this.nextLevel.name).setup()
+    }
+
+  }
+
+  setup(){
+    player.x = this.playerPosition.x;
+    player.y = this.playerPosition.y;
+
   }
 }
