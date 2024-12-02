@@ -3,7 +3,7 @@ let platforms = [];
 let gravity = 0.8;
 let friction = 0.2;
 let jumpStrength = -15;
-let gameState = "Level 1";
+let gameState = "Level 3";
 let levels = new Map();
 
 
@@ -72,7 +72,7 @@ function setup() {
           //needs spike class
         ],
         enemies: [
-          //needs enemy class
+          new Enemy(1425, height - 400, 50, 2, 250),
         ]
       }, {
         left: 0,
@@ -120,7 +120,8 @@ function setup() {
           //needs spike class
         ],
         enemies: [
-          //needs enemy class
+          new Enemy(275, height - 850, 50, 2, 250),
+          new Enemy(1750, height - 850, 50, 2, 250),
         ]
       }, {
         left: 0,
@@ -178,6 +179,14 @@ function draw() {
   console.log(gameState);
   levels.get(gameState).draw();
 
+}
+
+// Key press for jump
+function keyPressed() {
+  if (keyCode === 32) {
+    // Space bar
+    player.jump();
+  }
 }
 
 // Player class
@@ -258,11 +267,19 @@ class Player {
 
   }
 
-  collisionAdjustAll(platforms) {
+  platformCollisionAdjustAll(platforms) {
     for (let platform of platforms) {
-      if (this.checkCollision(platform)) this.collisionAdjust(platform);
+      if (this.checkCollision(platform, "platform")) this.platformCollisionAdjust(platform);
     }
     this.groundReset(platforms);
+  }
+
+  enemyCollision(enemies) {
+    for (let enemy of enemies) {
+      if (this.checkCollision(enemy, "enemy")) {
+        console.log("You died");
+      }
+    }
   }
 
   isOnGround(platforms) {
@@ -272,7 +289,7 @@ class Player {
     return false;
   }
 
-  collisionAdjust(platform) {
+  platformCollisionAdjust(platform) {
     let overlap = {
       left: this.x + this.width - platform.x,
       right: platform.x + platform.width - this.x,
@@ -297,28 +314,18 @@ class Player {
     }
   }
 
-  checkCollision(platform) {
-    return isOverlapping(this.x, this.y, this.width, this.height, platform.x, platform.y, platform.width, platform.height);
-
-    /**
-     * Check if two rectangles are overlapping
-     * @param x1 {number} the x position of the first rectangle
-     * @param y1 {number} the y position of the first rectangle
-     * @param w1 {number} the width of the first rectangle
-     * @param h1 {number} the height of the first rectangle
-     * @param x2 {number} the x position of the second rectangle
-     * @param y2 {number} the y position of the second rectangle
-     * @param w2 {number} the width of the second rectangle
-     * @param h2 {number} the height of the second rectangle
-     * @returns {boolean}
-     */
-    function isOverlapping(x1, y1, w1, h1, x2, y2, w2, h2) {
-      return (
-          x1 < x2 + w2 &&
-          x1 + w1 > x2 &&
-          y1 < y2 + h2 &&
-          y1 + h1 > y2
-      );
+  checkCollision(element, type) {
+    switch (type) {
+        case "platform":
+            return Platform.isOverlapping(this, element);
+        case "spike":
+            return Spike.isOverlapping(this, element);
+        case "enemy":
+            if (Enemy.isOverlapping(this, element)) {
+              return true;
+            } else {
+              return false;
+            }
     }
   }
 
@@ -339,13 +346,38 @@ class Player {
   }
 }
 
-// Platform class
-class Platform {
-  constructor(x, y, w, h) {
+/**
+ * Element object
+ * @property {number} x - The x coordinate of the element
+ * @property {number} y - The y coordinate of the element
+ * @property {number} width - The width of the element
+ * @property {number} height - The height of the element
+ */
+class Element {
+  x;
+  y;
+  width;
+  height;
+
+  constructor(x, y, width, height) {
     this.x = x;
     this.y = y;
-    this.width = w;
-    this.height = h;
+    this.width = width;
+    this.height = height;
+  }
+}
+
+/**
+ * Platform object
+ * @property {number} x - The x coordinate of the platform
+ * @property {number} y - The y coordinate of the platform
+ * @property {number} width - The width of the platform
+ * @property {number} height - The height of the platform
+ */
+class Platform extends Element {
+
+  constructor(x, y, width, height) {
+    super(x, y, width, height);
   }
 
   display() {
@@ -353,14 +385,68 @@ class Platform {
     fill(48, 25, 52);
     rect(this.x, this.y, this.width, this.height);
   }
+
+  /**
+   * Check if two rectangles are overlapping
+   * @param player {Player} the player object
+   * @param platform {Platform} the platform object
+   * @returns {boolean}
+   */
+  static isOverlapping(player, platform) {
+    return (
+        player.x < platform.x + platform.width &&
+        player.x + player.width > platform.x &&
+        player.y < platform.y + platform.height &&
+        player.y + player.height > platform.y
+    );
+  }
 }
 
-// Key press for jump
-function keyPressed() {
-  if (keyCode === 32) {
-    // Space bar
-    player.jump();
-  }
+/**
+ * Enemy object
+ * @property {number} x - The x coordinate of the enemy
+ * @property {number} y - The y coordinate of the enemy
+ * @property {number} width - The width of the enemy
+ * @property {number} height - The height of the enemy
+ * @property {number} speed - The speed of the enemy
+ * @property {number} moveRange - The range of the enemy's movement
+ * @property {number} baseX - The original x coordinate of the enemy
+ */
+class Enemy extends Element {
+    speed;
+    moveRange;
+    baseX;
+
+    constructor(x, y, radius, speed, moveRange) {
+        super(x, y, 2 * radius, radius);
+        this.speed = speed;
+        this.moveRange = moveRange;
+        this.baseX = x;
+    }
+
+    display() {
+        noStroke();
+        fill(93, 63, 211);
+        this.move();
+        arc(this.x, this.y, this.width, 2 * this.height, PI, 0);
+    }
+
+    move() {
+        this.x = this.baseX + (this.moveRange - this.width) / 2 * sin(frameCount / 100 * this.speed);
+    }
+
+    static isOverlapping(player, enemy) {
+      let corners = {
+        bottomLeft: {x: player.x, y: player.y + player.height},
+        bottomRight: {x: player.x + player.width, y: player.y + player.height}
+      }
+
+      for (let corner in corners) {
+        corner = corners[corner];
+        if (dist(corner.x, corner.y, enemy.x, enemy.y) <= enemy.height  && corner.y >= enemy.y) return true;
+      }
+      return false;
+    }
 }
 
 /**
@@ -401,8 +487,9 @@ class Level {
     player.display();
 
     // Display the elements (platforms, enemies etc.)
-    for (const elements in this.elements) {
-      if(this.elements[elements] instanceof Array) for (let element of this.elements[elements]) {
+    for (let elements in this.elements) {
+      elements = this.elements[elements];
+      if(elements instanceof Array) for (let element of elements) {
         element.display();
       }
     }
@@ -410,7 +497,8 @@ class Level {
     player.borderAdjust(this.borders);
 
     // Check for collision with platforms
-    player.collisionAdjustAll(this.elements.platforms);
+    player.platformCollisionAdjustAll(this.elements.platforms);
+    player.enemyCollision(this.elements.enemies);
 
     if (this.nextLevel !== null && this.nextLevel.condition()) {
       gameState = this.nextLevel.name;
