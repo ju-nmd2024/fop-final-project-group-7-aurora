@@ -445,7 +445,9 @@ class Enemy extends Element {
         corner = corners[corner];
         if (dist(corner.x, corner.y, enemy.x, enemy.y) <= enemy.height  && corner.y >= enemy.y) return true;
       }
+      if (player.x < enemy.x + enemy.width && player.x + player.width > enemy.x && player.y < enemy.y + enemy.height && player.y + player.height > enemy.y) return true;
       return false;
+
     }
 }
 
