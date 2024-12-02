@@ -28,11 +28,8 @@ function setup() {
             new Platform(1600, height - 450, 360, 450)
         ],
         spikes: [
-            //needs spike class
+          //this is where you draw the spikes
         ],
-        enemies: [
-          //needs enemy class
-        ]
       }, {
         left: 0,
         right: width,
@@ -69,7 +66,7 @@ function setup() {
           new Platform(0, height - 900, 250, 50)
         ],
         spikes: [
-          //needs spike class
+          //this is where you draw the spikes
         ],
         enemies: [
           new Enemy(1425, height - 400, 50, 2, 250),
@@ -117,7 +114,9 @@ function setup() {
 
         ],
         spikes: [
-          //needs spike class
+            //testing
+            new Spike(350, height - 350, 40, 40),
+            //this is where you draw the spikes
         ],
         enemies: [
           new Enemy(275, height - 850, 50, 2, 250),
@@ -172,11 +171,12 @@ function setup() {
   ))
   levels.get(gameState).setup()
 
+
+
 }
 
 function draw() {
   background(135, 206, 250); // Sky color
-  console.log(gameState);
   levels.get(gameState).draw();
 
 }
@@ -189,8 +189,28 @@ function keyPressed() {
   }
 }
 
-// Player class
+/**
+ * Player object
+ * @property {number} x - The x coordinate of the player
+ * @property {number} y - The y coordinate of the player
+ * @property {number} width - The width of the player
+ * @property {number} height - The height of the player
+ * @property {number} xSpeed - The speed of the player in the x direction
+ * @property {number} ySpeed - The speed of the player in the y direction
+ * @property {boolean} onGround - Whether the player is on the ground
+ * @property {boolean} canDoubleJump - Whether the player can double jump
+ *
+ */
 class Player {
+    x;
+    y;
+    width;
+    height;
+    xSpeed;
+    ySpeed;
+    onGround;
+    canDoubleJump;
+
   constructor() {
     this.x = 50;
     this.y = height - 450;
@@ -200,6 +220,16 @@ class Player {
     this.ySpeed = 0;
     this.onGround = false;
     this.canDoubleJump = true; // Allow double jump
+
+  }
+
+  corners() {
+    return {
+      topLeft: {x: this.x, y: this.y},
+      topRight: {x: this.x + this.width, y: this.y},
+      bottomLeft: {x: this.x, y: this.y + this.height},
+      bottomRight: {x: this.x + this.width, y: this.y + this.height}
+    }
   }
 
   update() {
@@ -274,9 +304,10 @@ class Player {
     this.groundReset(platforms);
   }
 
-  enemyCollision(enemies) {
-    for (let enemy of enemies) {
-      if (this.checkCollision(enemy, "enemy")) {
+  deadlyCollision(elements, type) {
+
+    if (elements instanceof Array) for (let element of elements) {
+      if (this.checkCollision(element, type)) {
         console.log("You died");
       }
     }
@@ -321,11 +352,7 @@ class Player {
         case "spike":
             return Spike.isOverlapping(this, element);
         case "enemy":
-            if (Enemy.isOverlapping(this, element)) {
-              return true;
-            } else {
-              return false;
-            }
+            return Enemy.isOverlapping(this, element);
     }
   }
 
@@ -436,19 +463,48 @@ class Enemy extends Element {
     }
 
     static isOverlapping(player, enemy) {
-      let corners = {
-        bottomLeft: {x: player.x, y: player.y + player.height},
-        bottomRight: {x: player.x + player.width, y: player.y + player.height}
-      }
 
-      for (let corner in corners) {
-        corner = corners[corner];
+      for (let corner in player.corners()) {
+        corner = player.corners()[corner];
         if (dist(corner.x, corner.y, enemy.x, enemy.y) <= enemy.height  && corner.y >= enemy.y) return true;
       }
       if (player.x < enemy.x + enemy.width && player.x + player.width > enemy.x && player.y < enemy.y + enemy.height && player.y + player.height > enemy.y) return true;
       return false;
 
     }
+}
+
+class Spike extends Element {
+  constructor(x, y, width, height) {
+    super(x, y, width, height);
+  }
+
+  display() {
+    noStroke();
+    fill(255, 0, 0);
+    triangle(this.x - this.width / 2, this.y, this.x, this.y - this.height, this.x + this.width / 2, this.y);
+  }
+
+  static isOverlapping(player, spike) {
+    let slope = spike.height / (spike.width / 2);
+
+    for (let corner in player.corners()) {
+      corner = player.corners()[corner];
+
+      let top = spike.y - spike.height;
+      let left = -slope * (corner.x - spike.x) + top; // Left slope equation
+      let right = slope * (corner.x - spike.x) + top; // Right slope equation
+
+      if (
+          corner.y >= left &&
+          corner.y >= right &&
+          corner.y <= spike.y
+      ) {
+        return true;
+      }
+    }
+    return false;
+  }
 }
 
 /**
@@ -500,7 +556,8 @@ class Level {
 
     // Check for collision with platforms
     player.platformCollisionAdjustAll(this.elements.platforms);
-    player.enemyCollision(this.elements.enemies);
+    player.deadlyCollision(this.elements.enemies, "enemy");
+    player.deadlyCollision(this.elements.spikes, "spike");
 
     if (this.nextLevel !== null && this.nextLevel.condition()) {
       gameState = this.nextLevel.name;
