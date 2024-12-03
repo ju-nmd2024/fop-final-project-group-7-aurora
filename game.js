@@ -8,7 +8,7 @@ let levels = new Map();
 
 
 function setup() {
-  createCanvas(1879, 1200);
+  createCanvas(windowWidth, windowHeight);
 
   player = new Player();
 
@@ -17,33 +17,33 @@ function setup() {
           width: 1879,
           height: 1200
       },
-      (level) => { return {
+      (gameField) => { return {
         platforms: [
-            new Platform(0, level.gameField.height - 250, 160, 350),
-            new Platform(300, level.gameField.height - 400, 160, 400),
-            new Platform(460, level.gameField.height - 475, 160, 475),
-            new Platform(620, level.gameField.height - 550, 160, 550),
-            new Platform(840, level.gameField.height - 700, 150, 50),
-            new Platform(1040, level.gameField.height - 600, 150, 50),
-            new Platform(1250, level.gameField.height - 600, 150, 50),
-            new Platform(1450, level.gameField.height - 700, 150, 50),
-            new Platform(1750, level.gameField.height - 750, 150, 50),
-            new Platform(1040, level.gameField.height - 450, 360, 450),
-            new Platform(1600, level.gameField.height - 450, 360, 450)
+            new Platform(0, gameField.height - 250, 160, 350),
+            new Platform(300, gameField.height - 400, 160, 400),
+            new Platform(460, gameField.height - 475, 160, 475),
+            new Platform(620, gameField.height - 550, 160, 550),
+            new Platform(840, gameField.height - 700, 150, 50),
+            new Platform(1040, gameField.height - 600, 150, 50),
+            new Platform(1250, gameField.height - 600, 150, 50),
+            new Platform(1450, gameField.height - 700, 150, 50),
+            new Platform(1750, gameField.height - 750, 150, 50),
+            new Platform(1040, gameField.height - 450, 360, 450),
+            new Platform(1600, gameField.height - 450, 360, 450)
         ],
         spikes: [
           //this is where you draw the spikes
         ],
       }},
-      (level) => { return {
+      (gameField) => { return {
         x: 50,
-        y: level.gameField.height - 450
+        y: gameField.height - 450
       }},
-      (level) => { return {
+      (gameField) => { return {
         x: 0,
         y: 0
       }},
-      (level) => { return {
+      (gameField) => { return {
         name: "Level 2",
         condition: () => player.x >= 1800
       }}
@@ -55,38 +55,38 @@ function setup() {
           width: 1879,
           height: 1200
       },
-      (level) => { return {
+      (gameField) => { return {
         platforms: [
-          new Platform(0, level.gameField.height - 500, 150, 50),
-          new Platform(0, level.gameField.height - 500, 150, 50),
-          new Platform(200, level.gameField.height - 300, 400, 400),
-          new Platform(750, level.gameField.height - 400, 200, 50),
-          new Platform(1300, level.gameField.height - 400, 250, 500),
-          new Platform(1730, level.gameField.height - 600, 150, 50),
-          new Platform(1350, level.gameField.height - 800, 250, 50),
-          new Platform(1250, level.gameField.height - 850, 250, 50),
-          new Platform(900, level.gameField.height - 750, 200, 50),
-          new Platform(500, level.gameField.height - 850, 150, 50),
-          new Platform(0, level.gameField.height - 900, 250, 50)
+          new Platform(0, gameField.height - 500, 150, 50),
+          new Platform(0, gameField.height - 500, 150, 50),
+          new Platform(200, gameField.height - 300, 400, 400),
+          new Platform(750, gameField.height - 400, 200, 50),
+          new Platform(1300, gameField.height - 400, 250, 500),
+          new Platform(1730, gameField.height - 600, 150, 50),
+          new Platform(1350, gameField.height - 800, 250, 50),
+          new Platform(1250, gameField.height - 850, 250, 50),
+          new Platform(900, gameField.height - 750, 200, 50),
+          new Platform(500, gameField.height - 850, 150, 50),
+          new Platform(0, gameField.height - 900, 250, 50)
         ],
         spikes: [
           //this is where you draw the spikes
         ],
         enemies: [
-          new Enemy(1425, level.gameField.height - 400, 50, 2, 250),
+          new Enemy(1425, gameField.height - 400, 50, 2, 250),
         ]
       }},
-      (level) => { return {
+      (gameField) => { return {
         x: 50,
-        y: level.gameField.height - 600
+        y: gameField.height - 600
       }},
-      (level) => { return {
+      (gameField) => { return {
         x: 0,
         y: 0
       }},
-      (level) => { return {
+      (gameField) => { return {
         name: "Level 3",
-        condition: () => player.x <= 50 && player.y <= level.gameField.height - 900
+        condition: () => player.x <= 50 && player.y <= gameField.height - 900
       }}
 
   ))
@@ -96,48 +96,48 @@ function setup() {
           width: 1879,
           height: 1200
       },
-      (level) => { return {
+      (gameField) => { return {
         platforms: [
-          new Platform(1700, level.gameField.height - 100, 200, 200),
-          new Platform(1300, level.gameField.height - 30, 400, 30),
-          new Platform(1000, level.gameField.height - 950, 300, 950),
-          new Platform(1370, level.gameField.height - 200, 150, 50),
-          new Platform(1600, level.gameField.height - 850, 350, 500),
-          new Platform(1500, level.gameField.height - 400, 150, 50),
-          new Platform(1300, level.gameField.height - 550, 100, 50),
-          new Platform(1500, level.gameField.height - 750, 100, 50),
-          new Platform(850, level.gameField.height - 1000, 300, 50),
-          new Platform(1150, level.gameField.height - 980, 50, 40),
-          new Platform(930, level.gameField.height - 950, 80, 50),
-          new Platform(500, level.gameField.height - 1100, 200, 50),
-          new Platform(150, level.gameField.height - 850, 250, 50),
-          new Platform(600, level.gameField.height - 650, 250, 50),
-          new Platform(250, level.gameField.height - 350, 250, 50),
-          new Platform(0, level.gameField.height - 100, 150, 1500),
-          new Platform(150, level.gameField.height - 30, 850, 30)
+          new Platform(1700, gameField.height - 100, 200, 200),
+          new Platform(1300, gameField.height - 30, 400, 30),
+          new Platform(1000, gameField.height - 950, 300, 950),
+          new Platform(1370, gameField.height - 200, 150, 50),
+          new Platform(1600, gameField.height - 850, 350, 500),
+          new Platform(1500, gameField.height - 400, 150, 50),
+          new Platform(1300, gameField.height - 550, 100, 50),
+          new Platform(1500, gameField.height - 750, 100, 50),
+          new Platform(850, gameField.height - 1000, 300, 50),
+          new Platform(1150, gameField.height - 980, 50, 40),
+          new Platform(930, gameField.height - 950, 80, 50),
+          new Platform(500, gameField.height - 1100, 200, 50),
+          new Platform(150, gameField.height - 850, 250, 50),
+          new Platform(600, gameField.height - 650, 250, 50),
+          new Platform(250, gameField.height - 350, 250, 50),
+          new Platform(0, gameField.height - 100, 150, 1500),
+          new Platform(150, gameField.height - 30, 850, 30)
 
         ],
         spikes: [
             //testing
-            new Spike(350, level.gameField.height - 350, 40, 40),
+            new Spike(350, gameField.height - 350, 40, 40),
             //this is where you draw the spikes
         ],
         enemies: [
-          new Enemy(275, level.gameField.height - 850, 50, 2, 250),
-          new Enemy(1750, level.gameField.height - 850, 50, 2, 250),
+          new Enemy(1750, gameField.height - 850, 50, 2, 250),
+          new Enemy(275, gameField.height - 850, 50, 2, 250),
         ]
       }},
-      (level) => { return {
+      (gameField) => { return {
         x: 1780,
-        y: level.gameField.height - 250
+        y: gameField.height - 250
       }},
-      (level) => { return {
+      (gameField) => { return {
         x: 0,
         y: 0
       }},
-      (level) => { return {
+      (gameField) => { return {
         name: "Aurora",
-        condition: () => player.x <= 20 && player.y <= level.gameField.height - 100
+        condition: () => player.x <= 20 && player.y <= gameField.height - 100
       }}
 
   ))
@@ -147,9 +147,9 @@ function setup() {
           width: 1879,
           height: 1200
       },
-      (level) => { return {
+      (gameField) => { return {
         platforms: [
-          new Platform(0, level.gameField.height - 300, width, 300)
+          new Platform(0, gameField.height - 300, width, 300)
         ],
         spikes: [
           //needs spike class
@@ -158,11 +158,11 @@ function setup() {
           //needs enemy class
         ]
       }},
-      (level) => { return {
+      (gameField) => { return {
         x: width - 100,
-        y: level.gameField.height - 380
+        y: gameField.height - 380
       }},
-      (level) => { return {
+      (gameField) => { return {
         x: 0,
         y: 0
       }}
@@ -394,6 +394,34 @@ class Element {
     this.width = width;
     this.height = height;
   }
+
+    /**
+     * Checks if the midpoint of the element is between the sides of the player
+     * @param player {Player} the player object
+     * @returns {boolean}
+     */
+  isBetweenSides(player) {
+    return (
+        player.y + player.height >= this.y - this.height &&
+        player.y + player.height <= this.y &&
+        player.x <= this.x &&
+        player.x + player.width >= this.x
+    );
+  }
+    /**
+     * Check if two rectangles are overlapping
+     * @param player {Player} the player object
+     * @param platform {Platform} the platform object
+     * @returns {boolean}
+     */
+    static isOverlapping(player, platform) {
+        return (
+            player.y < platform.y + platform.height &&
+            player.y + player.height > platform.y &&
+            player.x < platform.x + platform.width &&
+            player.x + player.width > platform.x
+        );
+    }
 }
 
 /**
@@ -413,21 +441,6 @@ class Platform extends Element {
     noStroke();
     fill(48, 25, 52);
     rect(this.x, this.y, this.width, this.height);
-  }
-
-  /**
-   * Check if two rectangles are overlapping
-   * @param player {Player} the player object
-   * @param platform {Platform} the platform object
-   * @returns {boolean}
-   */
-  static isOverlapping(player, platform) {
-    return (
-        player.x < platform.x + platform.width &&
-        player.x + player.width > platform.x &&
-        player.y < platform.y + platform.height &&
-        player.y + player.height > platform.y
-    );
   }
 }
 
@@ -465,28 +478,11 @@ class Enemy extends Element {
     }
 
     static isOverlapping(player, enemy) {
-
       for (let corner in player.corners()) {
         corner = player.corners()[corner];
         if (dist(corner.x, corner.y, enemy.x, enemy.y) <= enemy.height && corner.y >= enemy.y) return true;
       }
-      let border = Math.sqrt(enemy.height ** 2 - (enemy.height / (enemy.y - player.y)) ** 2)
-      if (
-        player.y <= enemy.y + enemy.height &&
-        player.y + player.height >= enemy.y &&
-        (
-            (
-                player.x <= enemy.x + border &&
-                player.x >= enemy.x - border
-            ) || (
-                player.x + player.width >= enemy.x - border &&
-                player.x + player.width <= enemy.x + border
-            )
-        )
-
-      ) return true;
-      return false;
-
+      return enemy.isBetweenSides(player);
     }
 }
 
@@ -503,23 +499,22 @@ class Spike extends Element {
 
   static isOverlapping(player, spike) {
     let slope = spike.height / (spike.width / 2);
+    let top = spike.y - spike.height;
 
     for (let corner in player.corners()) {
       corner = player.corners()[corner];
 
-      let top = spike.y - spike.height;
       let left = -slope * (corner.x - spike.x) + top; // Left slope equation
       let right = slope * (corner.x - spike.x) + top; // Right slope equation
 
       if (
-          corner.y >= left &&
-          corner.y >= right &&
-          corner.y <= spike.y
+        corner.y >= left &&
+        corner.y >= right
       ) {
         return true;
       }
     }
-    return false;
+    return spike.isBetweenSides(player);
   }
 }
 
@@ -528,7 +523,7 @@ class Spike extends Element {
  * @property {string} name - The name of the level
  * @property {{platforms?: Platform[], spikes?: Spike[], enemies?: Enemy[]}} elements - The elements of the level
  * @property {{width: number, height: number}} gameField - The gameField of the level
- * @property {{name: string, condition: function}} nextLevel - The next level
+ * @property {{name: string, condition: function: {name: string, condition: function}}} nextLevel - The next level
  * @property {{x: number, y: number}} playerPosition - The player position
  * @property {{x: number, y: number}} cameraPosition - The camera position
  */
@@ -540,13 +535,22 @@ class Level {
   cameraPosition;
   nextLevel;
 
+    /**
+     *
+     * @param name {string}
+     * @param gameField {{width: number, height: number}}
+     * @param elements {function(gameField): {platforms?: Platform[], spikes?: Spike[], enemies?: Enemy[]}}
+     * @param playerPosition {function(gameField): {x: number, y: number}}
+     * @param cameraPosition {function(gameField): {x: number, y: number}}
+     * @param nextLevel {function(gameField): {name: string, condition: function}}
+     */
   constructor(name, gameField, elements, playerPosition, cameraPosition, nextLevel = null) {
     this.name = name;
     this.gameField = gameField;
-    this.elements = elements(this);
-    this.playerPosition = playerPosition(this);
-    this.cameraPosition = cameraPosition(this);
-    if (nextLevel !== null) this.nextLevel = nextLevel(this);
+    this.elements = elements(this.gameField);
+    this.playerPosition = playerPosition(this.gameField);
+    this.cameraPosition = cameraPosition(this.gameField);
+    if (nextLevel !== null) this.nextLevel = nextLevel(this.gameField);
 
 
   }
