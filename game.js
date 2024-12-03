@@ -1,7 +1,7 @@
 let player;
 let platforms = [];
 let gravity = 0.8;
-let friction = 0.0001;
+let friction = 0.2;
 let jumpStrength = -15;
 let gameState = "Level 1";
 let levels = new Map();
@@ -291,7 +291,7 @@ class Player {
     if (this.isOnGround(platforms)) {
       this.onGround = true;
       this.ySpeed = 0;
-      this.xSpeed = 0;
+      //this.xSpeed = 0;
       this.canDoubleJump = true; // Reset double jump when landing
     } else {
       this.onGround = false;
