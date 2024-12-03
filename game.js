@@ -149,7 +149,7 @@ function setup() {
       },
       (gameField) => { return {
         platforms: [
-          new Platform(0, gameField.height - 300, width, 300)
+          new Platform(0, gameField.height - 300, gameField.width, 300)
         ],
         spikes: [
           //needs spike class
@@ -550,7 +550,8 @@ class Level {
     this.elements = elements(this.gameField);
     this.playerPosition = playerPosition(this.gameField);
     this.cameraPosition = cameraPosition(this.gameField);
-    if (nextLevel !== null) this.nextLevel = nextLevel(this.gameField);
+    this.nextLevel = nextLevel;
+    if (this.nextLevel !== null) this.nextLevel = nextLevel(this.gameField);
 
 
   }
@@ -582,7 +583,7 @@ class Level {
     if (player.y + player.height >= this.gameField.height) {
       console.log("You died");
     }
-
+    console.log(this.nextLevel)
     if (this.nextLevel !== null && this.nextLevel.condition()) {
       gameState = this.nextLevel.name;
       levels.get(this.nextLevel.name).setup()
