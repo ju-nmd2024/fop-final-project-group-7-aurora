@@ -1,10 +1,11 @@
 let player;
 let platforms = [];
 let gravity = 0.8;
-let friction = 0.2;
+let friction = 0.0001;
 let jumpStrength = -15;
 let gameState = "Level 1";
 let levels = new Map();
+let camZoom = 4;
 
 
 function setup() {
@@ -82,7 +83,7 @@ function setup() {
       }},
       (gameField) => { return {
         x: 0,
-        y: 0
+        y: 150
       }},
       (gameField) => { return {
         name: "Level 3",
@@ -133,7 +134,7 @@ function setup() {
       }},
       (gameField) => { return {
         x: 0,
-        y: 0
+        y: -100
       }},
       (gameField) => { return {
         name: "Aurora",
@@ -164,7 +165,7 @@ function setup() {
       }},
       (gameField) => { return {
         x: 0,
-        y: 0
+        y: -70
       }}
 
   ))
@@ -556,6 +557,12 @@ class Level {
 
   }
   draw(){
+      translate(width / 2 - this.cameraPosition.x, height / 2 - this.cameraPosition.y); // Center the origin
+      scale(camZoom);                     // Apply zoom
+      translate(
+          - constrain(player.x, width / (2 * camZoom), this.gameField.width - width / (2 * camZoom)),
+          - constrain(player.y, height / (2 * camZoom), this.gameField.height - height / (2 * camZoom)),
+      );         // Apply pan
 // Apply gravity to player
     player.applyGravity();
 
