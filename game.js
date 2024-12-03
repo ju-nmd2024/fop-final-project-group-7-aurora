@@ -183,10 +183,12 @@ function draw() {
 
 // Key press for jump
 function keyPressed() {
-  if (keyCode === 32) {
-    // Space bar
-    player.jump();
-  }
+    switch (keyCode) {
+        case 32: //SPACE
+            player.jump();
+            break;
+
+    }
 }
 
 /**
@@ -305,7 +307,6 @@ class Player {
   }
 
   deadlyCollision(elements, type) {
-
     if (elements instanceof Array) for (let element of elements) {
       if (this.checkCollision(element, type)) {
         console.log("You died");
@@ -315,7 +316,11 @@ class Player {
 
   isOnGround(platforms) {
     for (let platform of platforms) {
-      if (this.y + this.height === platform.y && this.x + this.width > platform.x && this.x < platform.x + platform.width) return true;
+      if (
+          this.y + this.height === platform.y &&
+          this.x + this.width > platform.x &&
+          this.x < platform.x + platform.width
+      ) return true;
     }
     return false;
   }
@@ -361,10 +366,8 @@ class Player {
    * @param borders {{left: number, right: number, top: number, bottom: number}}
    */
   borderAdjust(borders) {
-    if (this.x < borders.left) this.x = borders.left;
-    if (this.x + this.width > borders.right) this.x = borders.right - this.width;
-    if (this.y < borders.top) this.y = borders.top;
-    if (this.y + this.height > borders.bottom) this.y = borders.bottom - this.height;
+     this.x = constrain(this.x, borders.left, borders.right - this.width);
+     this.y = constrain(this.y, borders.top, borders.bottom - this.height);
   }
 
   display() {
@@ -466,9 +469,23 @@ class Enemy extends Element {
 
       for (let corner in player.corners()) {
         corner = player.corners()[corner];
-        if (dist(corner.x, corner.y, enemy.x, enemy.y) <= enemy.height  && corner.y >= enemy.y) return true;
+        if (dist(corner.x, corner.y, enemy.x, enemy.y) <= enemy.height && corner.y >= enemy.y) return true;
       }
-      if (player.x < enemy.x + enemy.width && player.x + player.width > enemy.x && player.y < enemy.y + enemy.height && player.y + player.height > enemy.y) return true;
+      let border = Math.sqrt(enemy.height ** 2 - (enemy.height / (enemy.y - player.y)) ** 2)
+      if (
+        player.y <= enemy.y + enemy.height &&
+        player.y + player.height >= enemy.y &&
+        (
+            (
+                player.x <= enemy.x + border &&
+                player.x >= enemy.x - border
+            ) || (
+                player.x + player.width >= enemy.x - border &&
+                player.x + player.width <= enemy.x + border
+            )
+        )
+
+      ) return true;
       return false;
 
     }
