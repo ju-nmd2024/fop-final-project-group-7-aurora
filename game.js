@@ -12,6 +12,28 @@ let win = {
     condition: () => player.x <= levels.get(win.level).gameField.width / 2 - player.width / 2
 
 }
+let aspectRatio = 16 / 9;
+let baseSize = {};
+baseSize.width = 1920;
+baseSize.height = baseSize.width / aspectRatio;
+console.log(baseSize);
+
+function calculateCanvasSize() {
+    return new Promise((setSize) => {
+        if (windowWidth / windowHeight > aspectRatio) {
+            setSize({width: windowHeight * aspectRatio, height: windowHeight});
+        } else {
+            setSize({width: windowWidth, height: windowWidth / aspectRatio});
+        }
+    });
+}
+
+function scaleCanvas(reverse = false) {
+    let scaleValue = min(width / baseSize.width, height / baseSize.height);
+    translate(width / 2, height / 2);
+    scale(reverse ? 1 / scaleValue : scaleValue);
+    translate(-width / 2, -height / 2);
+}
 
 function resetGameSettings() { // Reset game settings
     gameLevel = "Level 1";
@@ -21,16 +43,20 @@ function resetGameSettings() { // Reset game settings
 }
 
 function windowResized() {
-    resizeCanvas(windowWidth, windowHeight);
+    calculateCanvasSize().then((size) => {
+        resizeCanvas(size.width, size.height);
+    });
 }
 
 function setup() {
-  createCanvas(windowWidth, windowHeight);
+    calculateCanvasSize().then((size) => {
+        createCanvas(size.width, size.height);
+    });
 
-  player = new Player();
+    player = new Player();
 
-  levels.set("Level 1", new Level("Level 1",
-      {
+    levels.set("Level 1", new Level("Level 1",
+        {
           width: 1879,
           height: 1200
       },
@@ -266,7 +292,7 @@ function setup() {
         fill(0);
         textSize(50);
         textAlign("center", "center");
-        text("Starlit Wanderer", width / 2, height / 2 - 100);
+        text("Starlit Wanderer", width / 2, height / 2 - 500);
     }));
 
     screens.set("Game Over", new Screen("Game Over", () => {
@@ -286,6 +312,9 @@ function setup() {
     }));
 
     screens.set("Game", new Screen("Game", () => {
+        fill(0);
+        textSize(50);
+        text(levels.get(gameLevel).name, width / 2 - 900, height / 2 - 450);
         levels.get(gameLevel).draw();
     }));
 
@@ -293,8 +322,10 @@ function setup() {
 
 function draw() {
   background(135, 206, 250); // Sky color
+  push()
+  scaleCanvas();
   screens.get(screenState).display();
-
+  pop();
 
 }
 
@@ -717,6 +748,7 @@ class Level {
 
   draw(play = true){
       push();
+      scaleCanvas(true);
       this.setupCamera(player);
 
     // Display the elements (platforms, enemies etc.)
