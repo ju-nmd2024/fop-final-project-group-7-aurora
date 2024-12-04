@@ -1,7 +1,7 @@
 let player;
 let platforms = [];
 let gravity = 0.8;
-let friction = 0.2;
+let friction = 0.5;
 let jumpStrength = -15;
 let gameLevel;
 let screenState = "Menu";
@@ -560,10 +560,10 @@ class Element {
      */
     static isOverlapping(player, platform) {
         return (
-            player.y < platform.y + platform.height &&
-            player.y + player.height > platform.y &&
-            player.x < platform.x + platform.width &&
-            player.x + player.width > platform.x
+            player.y <= platform.y + platform.height &&
+            player.y + player.height >= platform.y &&
+            player.x <= platform.x + platform.width &&
+            player.x + player.width >= platform.x
         );
     }
 }
@@ -653,7 +653,9 @@ class Spike extends Element {
 
       if (
         corner.y >= left &&
-        corner.y >= right
+        corner.y >= right &&
+        corner.y <= spike.y &&
+        corner.y >= top
       ) {
         return true;
       }
