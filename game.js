@@ -3,10 +3,22 @@ let platforms = [];
 let gravity = 0.8;
 let friction = 0.2;
 let jumpStrength = -15;
-let gameState = "Level 1";
+let gameLevel;
+let screenState = "Menu";
 let levels = new Map();
-let camZoom = 4;
+let screens = new Map();
+let win = {
+    level: "Aurora",
+    condition: () => player.x <= width / 2 - player.width / 2
 
+}
+
+function resetGameSettings() { // Reset game settings
+    gameLevel = "Level 1";
+    screenState = "Game";
+    player.alive = true;
+    levels.get(gameLevel).setup();
+}
 
 function setup() {
   createCanvas(windowWidth, windowHeight);
@@ -42,7 +54,8 @@ function setup() {
       }},
       (gameField) => { return {
         x: 0,
-        y: 0
+        y: -50,
+        zoom: 1.3
       }},
       (gameField) => { return {
         name: "Level 2",
@@ -83,7 +96,8 @@ function setup() {
       }},
       (gameField) => { return {
         x: 0,
-        y: 150
+        y: -50,
+        zoom: 1.3
       }},
       (gameField) => { return {
         name: "Level 3",
@@ -134,7 +148,8 @@ function setup() {
       }},
       (gameField) => { return {
         x: 0,
-        y: -100
+        y: -30,
+        zoom: 1.3
       }},
       (gameField) => { return {
         name: "Aurora",
@@ -165,19 +180,44 @@ function setup() {
       }},
       (gameField) => { return {
         x: 0,
-        y: -70
+        y: -70,
+        zoom: 1
       }}
 
   ))
-  levels.get(gameState).setup()
+    screens.set("Menu", new Screen("Menu", () => {
+        fill(0);
+        textSize(50);
+        textAlign("center", "center");
+        text("Starlit Wanderer", width / 2, height / 2 - 100);
+    }));
 
+    screens.set("Game Over", new Screen("Game Over", () => {
+        levels.get(gameLevel).draw(false);
+        fill(0);
+        textSize(50);
+        textAlign("center", "center");
+        text("Game Over", width / 2, height / 2 - 100);
+    }));
 
+    screens.set("Win", new Screen("Win", () => {
+        levels.get(gameLevel).draw(false);
+        fill(0);
+        textSize(50);
+        textAlign("center", "center");
+        text("You Won!", width / 2, height / 2 - 100);
+    }));
+
+    screens.set("Game", new Screen("Game", () => {
+        levels.get(gameLevel).draw();
+    }));
 
 }
 
 function draw() {
   background(135, 206, 250); // Sky color
-  levels.get(gameState).draw();
+  screens.get(screenState).display();
+
 
 }
 
@@ -185,9 +225,33 @@ function draw() {
 function keyPressed() {
     switch (keyCode) {
         case 32: //SPACE
-            player.jump();
+            switch (screenState) {
+                case "Game":
+                    player.jump();
+                    break;
+                case "Menu":
+                    resetGameSettings();
+                    break;
+            }
             break;
-
+        case 82: //R
+            switch (screenState) {
+                case "Game":
+                case "Game Over":
+                case "Win":
+                    resetGameSettings();
+                    break;
+            }
+            break;
+        case 27: //ESC
+            switch (screenState) {
+                case "Game":
+                case "Game Over":
+                case "Win":
+                    screenState = "Menu";
+                    break;
+            }
+            break;
     }
 }
 
@@ -212,6 +276,7 @@ class Player {
     ySpeed;
     onGround;
     canDoubleJump;
+    alive;
 
   constructor() {
     this.x = 50;
@@ -222,9 +287,14 @@ class Player {
     this.ySpeed = 0;
     this.onGround = false;
     this.canDoubleJump = true; // Allow double jump
+    this.alive = true;
 
   }
+  kill() {
+      screenState = "Game Over";
+      this.alive = false;
 
+  }
   corners() {
     return {
       topLeft: {x: this.x, y: this.y},
@@ -309,7 +379,7 @@ class Player {
   deadlyCollision(elements, type) {
     if (elements instanceof Array) for (let element of elements) {
       if (this.checkCollision(element, type)) {
-        console.log("You died");
+        player.kill();
       }
     }
   }
@@ -556,21 +626,14 @@ class Level {
 
 
   }
-  draw(){
-      translate(width / 2 - this.cameraPosition.x, height / 2 - this.cameraPosition.y); // Center the origin
-      scale(camZoom);                     // Apply zoom
+  draw(play = true){
+      push();
+      translate(width / 2 - this.cameraPosition.x, height / 2 - this.cameraPosition.y);
+      scale(this.cameraPosition.zoom);
       translate(
-          - constrain(player.x, width / (2 * camZoom), this.gameField.width - width / (2 * camZoom)),
-          - constrain(player.y, height / (2 * camZoom), this.gameField.height - height / (2 * camZoom)),
-      );         // Apply pan
-// Apply gravity to player
-    player.applyGravity();
-
-    // Move player
-    player.update();
-
-    // Display player
-    player.display();
+          - constrain(player.x, width / (2 * this.cameraPosition.zoom), this.gameField.width - width / (2 * this.cameraPosition.zoom)),
+          - constrain(player.y, height / (2 * this.cameraPosition.zoom), this.gameField.height - height / (2 * this.cameraPosition.zoom)),
+      );
 
     // Display the elements (platforms, enemies etc.)
     for (let elements in this.elements) {
@@ -580,21 +643,37 @@ class Level {
       }
     }
 
-    player.borderAdjust(this.gameField);
+    if (play) {
+        player.update();
+        // Apply gravity to player
+        player.applyGravity();
 
-    // Check for collision with platforms
-    player.platformCollisionAdjustAll(this.elements.platforms);
-    player.deadlyCollision(this.elements.enemies, "enemy");
-    player.deadlyCollision(this.elements.spikes, "spike");
+        player.borderAdjust(this.gameField);
 
-    if (player.y + player.height >= this.gameField.height) {
-      console.log("You died");
+        // Check for collision with platforms
+        player.platformCollisionAdjustAll(this.elements.platforms);
+        player.deadlyCollision(this.elements.enemies, "enemy");
+        player.deadlyCollision(this.elements.spikes, "spike");
+
+        if (player.y + player.height >= this.gameField.height) {
+            player.kill();
+        }
+
+        if (gameLevel === win.level && win.condition()) {
+            screenState = "Win";
+        }
+
+        if (this.nextLevel !== null && this.nextLevel.condition()) {
+            gameLevel = this.nextLevel.name;
+            levels.get(this.nextLevel.name).setup()
+        }
+
+        // Move player
     }
-    console.log(this.nextLevel)
-    if (this.nextLevel !== null && this.nextLevel.condition()) {
-      gameState = this.nextLevel.name;
-      levels.get(this.nextLevel.name).setup()
-    }
+
+    // Display player
+    player.display();
+    pop();
 
   }
 
@@ -603,4 +682,28 @@ class Level {
     player.y = this.playerPosition.y;
 
   }
+}
+
+
+/**
+ * Screen object
+ * @property {string} name - The name of the screen
+ * @property {function} display - The function to display the screen
+ */
+class Screen {
+    name;
+    display;
+
+    /**
+     *
+     * @param name {string} The name of the screen
+     * @param run {function} The function being run when displaying the screen
+     */
+    constructor(name, run) {
+        this.name = name;
+        this.display = () => {
+            run();
+            return this;
+        };
+    }
 }
