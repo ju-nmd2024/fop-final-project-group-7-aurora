@@ -269,8 +269,8 @@ function setup() {
 
   levels.set("Aurora", new Level("Aurora",
       {
-          width: 1879,
-          height: 1200
+          width: baseSize.width,
+          height: baseSize.height
       },
       (gameField) => { return {
         platforms: [
@@ -278,7 +278,7 @@ function setup() {
         ],
       }},
       (gameField) => { return {
-        x: width - 100,
+        x: gameField.width - 100,
         y: gameField.height - 380
       }},
       (gameField) => { return {
