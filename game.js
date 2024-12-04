@@ -45,7 +45,37 @@ function setup() {
             new Platform(1600, gameField.height - 450, 360, 450)
         ],
         spikes: [
-          //this is where you draw the spikes
+          new Spike(430, gameField.height - 400, 30, 60),
+          new Spike(590, gameField.height - 475, 30, 60),
+          new Spike(750, gameField.height - 550, 30, 60),
+          new Spike(1055, gameField.height - 450, 30, 60),
+
+          new Spike(1085, gameField.height - 450, 30, 60),
+          new Spike(1115, gameField.height - 450, 30, 60),
+          new Spike(1145, gameField.height - 450, 30, 60),
+          new Spike(1175, gameField.height - 450, 30, 60),
+          new Spike(1205, gameField.height - 450, 30, 60),
+          new Spike(1235, gameField.height - 450, 30, 60),
+
+          new Spike(1265, gameField.height - 450, 30, 60),
+          new Spike(1295, gameField.height - 450, 30, 60),
+          new Spike(1325, gameField.height - 450, 30, 60),
+          new Spike(1355, gameField.height - 450, 30, 60),
+          new Spike(1385, gameField.height - 450, 30, 60),
+
+          new Spike(1385, gameField.height - 600, 30, 60),
+          new Spike(1355, gameField.height - 600, 30, 60),
+          new Spike(1055, gameField.height - 600, 30, 60),
+          new Spike(1085, gameField.height - 600, 30, 60),
+
+
+          new Spike(1650, gameField.height - 450, 30, 60),
+          new Spike(1620, gameField.height - 450, 30, 60),
+          new Spike(1680, gameField.height - 450, 30, 60),
+          new Spike(1710, gameField.height - 450, 30, 60),
+          new Spike(1740, gameField.height - 450, 30, 60),
+
+
         ],
       }},
       (gameField) => { return {
@@ -84,7 +114,11 @@ function setup() {
           new Platform(0, gameField.height - 900, 250, 50)
         ],
         spikes: [
-          //this is where you draw the spikes
+          new Spike(400, gameField.height - 300, 30, 60),
+          new Spike(370, gameField.height - 300, 30, 60),
+          new Spike(430, gameField.height - 300, 30, 60),
+          new Spike(915, gameField.height - 750, 30, 60),
+          new Spike(1085, gameField.height - 750, 30, 60),
         ],
         enemies: [
           new Enemy(1425, gameField.height - 400, 50, 2, 250),
@@ -113,9 +147,9 @@ function setup() {
       },
       (gameField) => { return {
         platforms: [
-          new Platform(1700, gameField.height - 100, 200, 200),
+          new Platform(1690, gameField.height - 100, 250, 200),
           new Platform(1300, gameField.height - 30, 400, 30),
-          new Platform(1000, gameField.height - 950, 300, 950),
+          new Platform(990, gameField.height - 950, 310, 950),
           new Platform(1370, gameField.height - 200, 150, 50),
           new Platform(1600, gameField.height - 850, 350, 500),
           new Platform(1500, gameField.height - 400, 150, 50),
@@ -133,9 +167,54 @@ function setup() {
 
         ],
         spikes: [
-            //testing
-            new Spike(350, gameField.height - 350, 40, 40),
-            //this is where you draw the spikes
+          new Spike(1315, gameField.height - 30, 30, 60),
+          new Spike(1345, gameField.height - 30, 30, 60),
+          new Spike(1375, gameField.height - 30, 30, 60),
+          new Spike(1405, gameField.height - 30, 30, 60),
+          new Spike(1435, gameField.height - 30, 30, 60),
+          new Spike(1465, gameField.height - 30, 30, 60),
+          new Spike(1495, gameField.height - 30, 30, 60),
+          new Spike(1525, gameField.height - 30, 30, 60),
+          new Spike(1555, gameField.height - 30, 30, 60),
+          new Spike(1585, gameField.height - 30, 30, 60),
+          new Spike(1615, gameField.height - 30, 30, 60),
+          new Spike(1645, gameField.height - 30, 30, 60),
+          new Spike(1675, gameField.height - 30, 30, 60),
+          new Spike(865, gameField.height - 1000, 30, 60),
+          new Spike(895, gameField.height - 1000, 30, 60),
+          new Spike(925, gameField.height - 1000, 30, 60),
+          new Spike(830, gameField.height - 650, 30, 60),
+          new Spike(615, gameField.height - 650, 30, 60),
+          new Spike(375, gameField.height - 350, 30, 60),
+          new Spike(165, gameField.height - 30, 30, 60),
+          new Spike(195, gameField.height - 30, 30, 60),
+          new Spike(225, gameField.height - 30, 30, 60),
+          new Spike(255, gameField.height - 30, 30, 60),
+          new Spike(285, gameField.height - 30, 30, 60),
+          new Spike(315, gameField.height - 30, 30, 60),
+          new Spike(345, gameField.height - 30, 30, 60),
+          new Spike(375, gameField.height - 30, 30, 60),
+          new Spike(405, gameField.height - 30, 30, 60),
+          new Spike(435, gameField.height - 30, 30, 60),
+          new Spike(465, gameField.height - 30, 30, 60),
+          new Spike(495, gameField.height - 30, 30, 60),
+          new Spike(525, gameField.height - 30, 30, 60),
+          new Spike(555, gameField.height - 30, 30, 60),
+          new Spike(585, gameField.height - 30, 30, 60),
+          new Spike(615, gameField.height - 30, 30, 60),
+          new Spike(645, gameField.height - 30, 30, 60),
+          new Spike(675, gameField.height - 30, 30, 60),
+          new Spike(705, gameField.height - 30, 30, 60),
+          new Spike(735, gameField.height - 30, 30, 60),
+          new Spike(765, gameField.height - 30, 30, 60),
+          new Spike(795, gameField.height - 30, 30, 60),
+          new Spike(825, gameField.height - 30, 30, 60),
+          new Spike(855, gameField.height - 30, 30, 60),
+          new Spike(885, gameField.height - 30, 30, 60),
+          new Spike(915, gameField.height - 30, 30, 60),
+          new Spike(945, gameField.height - 30, 30, 60),
+          new Spike(975, gameField.height - 30, 30, 60),
+
         ],
         enemies: [
           new Enemy(1750, gameField.height - 850, 50, 2, 250),
@@ -167,12 +246,6 @@ function setup() {
         platforms: [
           new Platform(0, gameField.height - 300, gameField.width, 300)
         ],
-        spikes: [
-          //needs spike class
-        ],
-        enemies: [
-          //needs enemy class
-        ]
       }},
       (gameField) => { return {
         x: width - 100,
@@ -626,14 +699,19 @@ class Level {
 
 
   }
+
+    setupCamera(player) {
+        translate(width / 2 - this.cameraPosition.x, height / 2 - this.cameraPosition.y);
+        scale(this.cameraPosition.zoom);
+        translate(
+            - constrain(player.x, width / (2 * this.cameraPosition.zoom), this.gameField.width - width / (2 * this.cameraPosition.zoom)),
+            - constrain(player.y, height / (2 * this.cameraPosition.zoom), this.gameField.height - height / (2 * this.cameraPosition.zoom)),
+        );
+    }
+
   draw(play = true){
       push();
-      translate(width / 2 - this.cameraPosition.x, height / 2 - this.cameraPosition.y);
-      scale(this.cameraPosition.zoom);
-      translate(
-          - constrain(player.x, width / (2 * this.cameraPosition.zoom), this.gameField.width - width / (2 * this.cameraPosition.zoom)),
-          - constrain(player.y, height / (2 * this.cameraPosition.zoom), this.gameField.height - height / (2 * this.cameraPosition.zoom)),
-      );
+      this.setupCamera(player);
 
     // Display the elements (platforms, enemies etc.)
     for (let elements in this.elements) {
