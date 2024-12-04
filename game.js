@@ -9,7 +9,7 @@ let levels = new Map();
 let screens = new Map();
 let win = {
     level: "Aurora",
-    condition: () => player.x <= width / 2 - player.width / 2
+    condition: () => player.x <= levels.get(win.level).gameField.width / 2 - player.width / 2
 
 }
 
@@ -18,6 +18,10 @@ function resetGameSettings() { // Reset game settings
     screenState = "Game";
     player.alive = true;
     levels.get(gameLevel).setup();
+}
+
+function windowResized() {
+    resizeCanvas(windowWidth, windowHeight);
 }
 
 function setup() {
@@ -704,10 +708,10 @@ class Level {
 
     setupCamera(player) {
         translate(width / 2 - this.cameraPosition.x, height / 2 - this.cameraPosition.y);
-        scale(this.cameraPosition.zoom);
+        scale(this.cameraPosition.zoom * (width / this.gameField.width));
         translate(
-            - constrain(player.x, width / (2 * this.cameraPosition.zoom), this.gameField.width - width / (2 * this.cameraPosition.zoom)),
-            - constrain(player.y, height / (2 * this.cameraPosition.zoom), this.gameField.height - height / (2 * this.cameraPosition.zoom)),
+            - constrain(player.x, width / (2 * this.cameraPosition.zoom * (width / this.gameField.width)), this.gameField.width - width / (2 * this.cameraPosition.zoom * (width / this.gameField.width))),
+            - constrain(player.y, height / (2 * this.cameraPosition.zoom * (width / this.gameField.width)), this.gameField.height - height / (2 * this.cameraPosition.zoom * (width / this.gameField.width))),
         );
     }
 
