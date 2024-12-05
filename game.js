@@ -1,60 +1,82 @@
+/**
+ * the player object
+ * @type {Player}
+ */
 let player;
-let platforms = [];
+
+/**
+ * the strength of the gravity
+ * @type {number}
+ */
 let gravity = 0.8;
+
+  /**
+ * the strength of the friction
+ * @type {number}
+ */
 let friction = 0.5;
+
+/**
+ * the strength of the jump
+ * @type {number}
+ */
 let jumpStrength = -15;
+
+/**
+ * the name of the current level
+ * @type {string}
+ */
 let gameLevel;
+
+/**
+ * the name of the current screen
+ * @type {string}
+ */
 let screenState = "Menu";
+
+/**
+ * the collection of the levels
+ * @type {Map<string, Level>}
+ */
 let levels = new Map();
+
+/**
+ * the collection of the screens
+ * @type {Map<string, Screen>}
+ */
 let screens = new Map();
+
+/**
+ * the details of the win condition
+ * @type {{condition: (function(): boolean), level: string}}
+ */
 let win = {
     level: "Aurora",
     condition: () => player.x <= levels.get(win.level).gameField.width / 2 - player.width / 2
-
 }
+
+/**
+ * the aspect ratio of the canvas
+ * @type {number}
+ */
 let aspectRatio = 16 / 9;
+
+/**
+ * the size to which the canvas is scaled
+ * @type {{width: number, height: number}}
+ */
 let baseSize = {};
 baseSize.width = 1920;
 baseSize.height = baseSize.width / aspectRatio;
-console.log(baseSize);
-
-function calculateCanvasSize() {
-    return new Promise((setSize) => {
-        if (windowWidth / windowHeight > aspectRatio) {
-            setSize({width: windowHeight * aspectRatio, height: windowHeight});
-        } else {
-            setSize({width: windowWidth, height: windowWidth / aspectRatio});
-        }
-    });
-}
-
-function scaleCanvas(reverse = false) {
-    let scaleValue = min(width / baseSize.width, height / baseSize.height);
-    translate(width / 2, height / 2);
-    scale(reverse ? 1 / scaleValue : scaleValue);
-    translate(-width / 2, -height / 2);
-}
-
-function resetGameSettings() { // Reset game settings
-    gameLevel = "Level 1";
-    screenState = "Game";
-    player.alive = true;
-    levels.get(gameLevel).setup();
-}
-
-function windowResized() {
-    calculateCanvasSize().then((size) => {
-        resizeCanvas(size.width, size.height);
-    });
-}
 
 function setup() {
     calculateCanvasSize().then((size) => {
         createCanvas(size.width, size.height);
     });
 
-    player = new Player();
+    player = new Player(50, 90);
 
+    // Levels setup
     levels.set("Level 1", new Level("Level 1",
         {
             width: 1879,
@@ -105,15 +127,14 @@ function setup() {
                     new Spike(1680, gameField.height - 450, 30, 60),
                     new Spike(1710, gameField.height - 450, 30, 60),
                     new Spike(1740, gameField.height - 450, 30, 60),
-
-
                 ],
             }
         },
         (gameField) => {
             return {
                 x: 50,
-                y: gameField.height - 450
+                y: gameField.height - 450,
+                orientation: "right"
             }
         },
         (gameField) => {
@@ -122,6 +143,10 @@ function setup() {
                 y: -50,
                 zoom: 1.3
             }
+        },
+        {
+            foreground: loadImage("graphics/foregrounds/level1_foreground.png"),
+            background: loadImage("graphics/backgrounds/level1_background.png")
         },
         (gameField) => {
             return {
@@ -166,7 +191,8 @@ function setup() {
         (gameField) => {
             return {
                 x: 50,
-                y: gameField.height - 600
+                y: gameField.height - 600,
+                orientation: "right"
             }
         },
         (gameField) => {
@@ -175,6 +201,10 @@ function setup() {
                 y: -50,
                 zoom: 1.3
             }
+        },
+        {
+            foreground: loadImage("graphics/foregrounds/level2_foreground.png"),
+            background: loadImage("graphics/backgrounds/level2_background.png")
         },
         (gameField) => {
             return {
@@ -270,7 +300,8 @@ function setup() {
         (gameField) => {
             return {
                 x: 1780,
-                y: gameField.height - 250
+                y: gameField.height - 250,
+                orientation: "left"
             }
         },
         (gameField) => {
@@ -279,6 +310,10 @@ function setup() {
                 y: -30,
                 zoom: 1.3
             }
+        },
+        {
+            foreground: loadImage("graphics/foregrounds/level3_foreground.png"),
+            background: loadImage("graphics/backgrounds/level3_background.png")
         },
         (gameField) => {
             return {
@@ -296,58 +331,92 @@ function setup() {
         (gameField) => {
             return {
                 platforms: [
-                    new Platform(0, gameField.height - 300, gameField.width, 300)
+                    new Platform(0, gameField.height - 150, gameField.width, 300)
                 ],
             }
         },
         (gameField) => {
             return {
                 x: gameField.width - 100,
-                y: gameField.height - 380
+                y: gameField.height - 200,
+                orientation: "left"
             }
         },
         (gameField) => {
             return {
                 x: 0,
-                y: -70,
+                y: 0,
                 zoom: 1
             }
+        },
+        {
+            foreground: loadImage("graphics/foregrounds/aurora_foreground.png"),
+            background: loadImage("graphics/backgrounds/aurora_background.png")
         }
     ))
-    screens.set("Menu", new Screen("Menu", () => {
-        fill(0);
-        textSize(50);
-        textAlign("center", "center");
-        text("Starlit Wanderer", width / 2, height / 2 - 500);
-    }));
 
-    screens.set("Game Over", new Screen("Game Over", () => {
-        levels.get(gameLevel).draw(false);
-        fill(0);
-        textSize(50);
-        textAlign("center", "center");
-        text("Game Over", width / 2, height / 2 - 100);
-    }));
+    // Screens setup
+    screens.set("Menu", new Screen("Menu"));
+
+    screens.set("Game Over", new Screen("Game Over"));
 
     screens.set("Win", new Screen("Win", () => {
         levels.get(gameLevel).draw(false);
-        fill(0);
-        textSize(50);
-        textAlign("center", "center");
-        text("You Won!", width / 2, height / 2 - 100);
     }));
 
     screens.set("Game", new Screen("Game", () => {
-        fill(0);
-        textSize(50);
-        text(levels.get(gameLevel).name, width / 2 - 900, height / 2 - 450);
         levels.get(gameLevel).draw();
     }));
 
 }
 
+/**
+ * calculates and returns the supposed height and the width of the canvas
+ * @returns {Promise<{width: number, height: number}>}
+ */
+function calculateCanvasSize() {
+    return new Promise((setSize) => {
+        if (windowWidth / windowHeight > aspectRatio) {
+            setSize({width: windowHeight * aspectRatio, height: windowHeight});
+        } else {
+            setSize({width: windowWidth, height: windowWidth / aspectRatio});
+        }
+    });
+}
+
+/**
+ * scales the contents to fit the canvas
+ * @param reverse {boolean} whether the canvas should be scaled back to the original
+ */
+function scaleCanvas(reverse = false) {
+    let scaleValue = min(width / baseSize.width, height / baseSize.height);
+    translate(width / 2, height / 2);
+    scale(reverse ? 1 / scaleValue : scaleValue);
+    translate(-width / 2, -height / 2);
+}
+
+/**
+ * resets the game settings for starting a new game
+ */
+function resetGameSettings() { // Reset game settings
+    gameLevel = "Aurora";
+    screenState = "Game";
+    player.alive = true;
+    levels.get(gameLevel).setup();
+}
+
+function windowResized() {
+    calculateCanvasSize().then((size) => {
+        resizeCanvas(size.width, size.height);
+    });
+}
+
+
 function draw() {
     background(135, 206, 250); // Sky color
+    textAlign("center", "center");
+    textSize(100);
+    text("Loading...", width / 2, height / 2);
     push()
     scaleCanvas();
     screens.get(screenState).display();
@@ -355,7 +424,6 @@ function draw() {
 
 }
 
-// Key press for jump
 function keyPressed() {
     switch (keyCode) {
         case 32: //SPACE
@@ -411,27 +479,51 @@ class Player {
     onGround;
     canDoubleJump;
     alive;
+    state;
+    orientation;
+    skins = new Map([
+        ["stand, left", loadImage("graphics/character/character_stand_left.png")],
+        ["stand, right", loadImage("graphics/character/character_stand_right.png")],
+        ["run 1, left", loadImage("graphics/character/character_run_1_left.png")],
+        ["run 1, right", loadImage("graphics/character/character_run_1_right.png")],
+        ["run 2, left", loadImage("graphics/character/character_run_2_left.png")],
+        ["run 2, right", loadImage("graphics/character/character_run_2_right.png")],
+        ["jump, left", loadImage("graphics/character/character_jump_left.png")],
+        ["jump, right", loadImage("graphics/character/character_jump_right.png")],
+    ]);
 
-    constructor() {
-        this.x = 50;
-        this.y = height - 450;
-        this.width = 50;
-        this.height = 50;
+    /**
+     * Creates a player object
+     * @param width
+     * @param height
+     */
+    constructor(width, height) {
+        this.x = 0;
+        this.y = 0;
+        this.width = width;
+        this.height = height;
         this.xSpeed = 0;
         this.ySpeed = 0;
         this.onGround = false;
         this.canDoubleJump = true; // Allow double jump
         this.alive = true;
-
+        this.state = "stand";
+        this.orientation = "right";
     }
 
+    /**
+     * Kills the player
+     */
     kill() {
         screenState = "Game Over";
         this.alive = false;
-
     }
 
-    corners() {
+    /**
+     * Returns the corners of the player
+     * @returns {{bottomLeft: {x: number, y: number}, bottomRight: {x: number, y: number}, topLeft: {x: number, y: number}, topRight: {x: number, y: number}}}
+     */
+    getCorners() {
         return {
             topLeft: {x: this.x, y: this.y},
             topRight: {x: this.x + this.width, y: this.y},
@@ -440,6 +532,9 @@ class Player {
         }
     }
 
+    /**
+     * Updates the player's position and speed
+     */
     update() {
         // Left and right movement
         switch (true) {
@@ -450,37 +545,34 @@ class Player {
                 this.xSpeed = 5;
                 break;
             default:
-                switch (true) {
-                    case this.xSpeed > 0:
-                        if (this.xSpeed > friction) {
-                            this.xSpeed -= friction;
-                        } else {
-                            this.xSpeed = 0;
-                        }
-                        break;
-                    case this.xSpeed < 0:
-                        if (-this.xSpeed > friction) {
-                            this.xSpeed += friction;
-                        } else {
-                            this.xSpeed = 0;
-                        }
-                        break;
+                if (frictionDirection(this.xSpeed) * -this.xSpeed > friction) {
+                    this.xSpeed += frictionDirection(this.xSpeed) * friction;
+                } else {
+                    this.xSpeed = 0;
                 }
+                break;
         }
-
 
         this.x += this.xSpeed;
         this.y += this.ySpeed;
 
-
+        function frictionDirection(speed) {
+            return speed > 0 ? -1 : 1;
+        }
     }
 
+    /**
+     * Applies gravity to the player
+     */
     applyGravity() {
         if (!this.onGround) {
             this.ySpeed += gravity; // Falling down
         }
     }
 
+    /**
+     * Makes the player jump
+     */
     jump() {
         if (this.onGround) {
             this.ySpeed = jumpStrength;
@@ -492,11 +584,14 @@ class Player {
         }
     }
 
+    /**
+     * Resets some of the player's settings when it is on the ground
+     * @param platforms {Platform[]} the platforms in the level
+     */
     groundReset(platforms) {
         if (this.isOnGround(platforms)) {
             this.onGround = true;
             this.ySpeed = 0;
-            //this.xSpeed = 0;
             this.canDoubleJump = true; // Reset double jump when landing
         } else {
             this.onGround = false;
@@ -504,6 +599,12 @@ class Player {
 
     }
 
+    /**
+     * Adjusts the player's position when colliding with any platform.
+     * This checks all the platforms whether the player is colliding with any of them,
+     * and if so, it adjusts the player's position to be outside the platform.
+     * @param platforms {Platform[]} the platforms in the level
+     */
     platformCollisionAdjustAll(platforms) {
         for (let platform of platforms) {
             if (this.checkCollision(platform, "platform")) this.platformCollisionAdjust(platform);
@@ -511,6 +612,11 @@ class Player {
         this.groundReset(platforms);
     }
 
+    /**
+     * Checks if the player is colliding with any deadly element of a certain type
+     * @param elements {Element[]} the elements to check collision with
+     * @param type {string} the type of the element
+     */
     deadlyCollision(elements, type) {
         if (elements instanceof Array) for (let element of elements) {
             if (this.checkCollision(element, type)) {
@@ -519,6 +625,11 @@ class Player {
         }
     }
 
+    /**
+     * Checks if the player is on the ground
+     * @param platforms {Platform[]} the platforms in the level
+     * @returns {boolean} whether the player is on the ground
+     */
     isOnGround(platforms) {
         for (let platform of platforms) {
             if (
@@ -530,6 +641,12 @@ class Player {
         return false;
     }
 
+    /**
+     * Adjusts the player's position when colliding with the specified platform.
+     * This checks whether the player is colliding with the platform,
+     * and if so, it adjusts the player's position to be outside the platform.
+     * @param platform {Platform} the platform to adjust the player's position to
+     */
     platformCollisionAdjust(platform) {
         let overlap = {
             left: this.x + this.width - platform.x,
@@ -555,6 +672,12 @@ class Player {
         }
     }
 
+    /**
+     * Checks if the player is colliding with an element of a certain type
+     * @param element {Element} the element to check collision with
+     * @param type {string} the type of the element
+     * @returns {boolean} whether the player is colliding with the element
+     */
     checkCollision(element, type) {
         switch (type) {
             case "platform":
@@ -567,7 +690,7 @@ class Player {
     }
 
     /**
-     *
+     * Adjusts the player's position to be within the game field
      * @param gameField {{width: number, height: number}}
      */
     borderAdjust(gameField) {
@@ -575,9 +698,13 @@ class Player {
         this.y = constrain(this.y, 0, gameField.height);
     }
 
+    /**
+     * Displays the player
+     */
     display() {
         fill(255, 0, 0);
-        rect(this.x, this.y, this.width, this.height);
+        image(this.skins.get(`${this.state}, ${this.orientation}`), this.x, this.y, this.width, this.height);
+        //rect(this.x, this.y, this.width, this.height);
     }
 }
 
@@ -594,6 +721,13 @@ class Element {
     width;
     height;
 
+    /**
+     * Creates an element object
+     * @param x {number} the x coordinate of the element
+     * @param y {number} the y coordinate of the element
+     * @param width {number} the width of the element
+     * @param height {number} the height of the element
+     */
     constructor(x, y, width, height) {
         this.x = x;
         this.y = y;
@@ -618,15 +752,15 @@ class Element {
     /**
      * Check if two rectangles are overlapping
      * @param player {Player} the player object
-     * @param platform {Platform} the platform object
+     * @param element {Element} the element object
      * @returns {boolean}
      */
-    static isOverlapping(player, platform) {
+    static isOverlapping(player, element) {
         return (
-            player.y <= platform.y + platform.height &&
-            player.y + player.height >= platform.y &&
-            player.x <= platform.x + platform.width &&
-            player.x + player.width >= platform.x
+            player.y <= element.y + element.height &&
+            player.y + player.height >= element.y &&
+            player.x <= element.x + element.width &&
+            player.x + player.width >= element.x
         );
     }
 }
@@ -640,14 +774,24 @@ class Element {
  */
 class Platform extends Element {
 
+    /**
+     * Creates a platform object
+     * @param x {number} the x coordinate of the platform
+     * @param y {number} the y coordinate of the platform
+     * @param width {number} the width of the platform
+     * @param height {number} the height of the platform
+     */
     constructor(x, y, width, height) {
         super(x, y, width, height);
     }
 
+    /**
+     * Displays the platform
+     */
     display() {
         noStroke();
         fill(48, 25, 52);
-        rect(this.x, this.y, this.width, this.height);
+        //rect(this.x, this.y, this.width, this.height);
     }
 }
 
@@ -660,12 +804,24 @@ class Platform extends Element {
  * @property {number} speed - The speed of the enemy
  * @property {number} moveRange - The range of the enemy's movement
  * @property {number} baseX - The original x coordinate of the enemy
+ * @property {Map<string, p5.Image | p5.Element | p5.Framebuffer>} skins - The skins of the enemy
  */
 class Enemy extends Element {
     speed;
     moveRange;
     baseX;
+    skins = new Map([
+        ["default", loadImage("graphics/elements/enemy.png")]
+    ]);
 
+    /**
+     * Creates an enemy object
+     * @param x {number} the x coordinate of the enemy
+     * @param y {number} the y coordinate of the enemy
+     * @param radius {number} the radius of the enemy
+     * @param speed {number} the speed factor of the enemy
+     * @param moveRange {number} the range of the enemy's movement
+     */
     constructor(x, y, radius, speed, moveRange) {
         super(x, y, 2 * radius, radius);
         this.speed = speed;
@@ -673,43 +829,84 @@ class Enemy extends Element {
         this.baseX = x;
     }
 
+    /**
+     * Displays the enemy
+     */
     display() {
         noStroke();
         fill(93, 63, 211);
         this.move();
-        arc(this.x, this.y, this.width, 2 * this.height, PI, 0);
+        image(this.skins.get("default"), this.x - this.width / 2, this.y - this.height, this.width, this.height);
+        //arc(this.x, this.y, this.width, 2 * this.height, PI, 0);
     }
 
+    /**
+     * Moves the enemy
+     */
     move() {
         this.x = this.baseX + (this.moveRange - this.width) / 2 * sin(frameCount / 100 * this.speed);
     }
 
+    /**
+     * Checks if the player is colliding with the enemy
+     * @param player {Player} the player object
+     * @param enemy {Enemy} the enemy object
+     * @returns {boolean} whether the player is colliding with the enemy
+     */
     static isOverlapping(player, enemy) {
-        for (let corner in player.corners()) {
-            corner = player.corners()[corner];
+        for (let corner in player.getCorners()) {
+            corner = player.getCorners()[corner];
             if (dist(corner.x, corner.y, enemy.x, enemy.y) <= enemy.height && corner.y >= enemy.y) return true;
         }
         return enemy.isBetweenSides(player);
     }
 }
 
+/**
+ * Spike object
+ * @property {number} x - The x coordinate of the spike
+ * @property {number} y - The y coordinate of the spike
+ * @property {number} width - The width of the spike
+ * @property {number} height - The height of the spike
+ * @property {Map<string, p5.Image | p5.Element | p5.Framebuffer>} skins - The skins of the spike
+ */
 class Spike extends Element {
+    skins = new Map([
+        ["default", loadImage("graphics/elements/spike.png")]
+    ]);
+    /**
+     * Creates a spike object
+     * @param x {number} the x coordinate of the spike
+     * @param y {number} the y coordinate of the spike
+     * @param width {number} the width of the spike
+     * @param height {number} the height of the spike
+     */
     constructor(x, y, width, height) {
         super(x, y, width, height);
     }
 
+    /**
+     * Displays the spike
+     */
     display() {
         noStroke();
         fill(255, 0, 0);
-        triangle(this.x - this.width / 2, this.y, this.x, this.y - this.height, this.x + this.width / 2, this.y);
+        image(this.skins.get("default"), this.x - this.width / 2, this.y - this.height, this.width, this.height);
+        //triangle(this.x - this.width / 2, this.y, this.x, this.y - this.height, this.x + this.width / 2, this.y);
     }
 
+    /**
+     * Checks if the player is colliding with the spike
+     * @param player {Player} the player object
+     * @param spike {Spike} the spike object
+     * @returns {boolean} whether the player is colliding with the spike
+     */
     static isOverlapping(player, spike) {
         let slope = spike.height / (spike.width / 2);
         let top = spike.y - spike.height;
 
-        for (let corner in player.corners()) {
-            corner = player.corners()[corner];
+        for (let corner in player.getCorners()) {
+            corner = player.getCorners()[corner];
 
             let left = -slope * (corner.x - spike.x) + top; // Left slope equation
             let right = slope * (corner.x - spike.x) + top; // Right slope equation
@@ -731,10 +928,11 @@ class Spike extends Element {
  * Level object
  * @property {string} name - The name of the level
  * @property {{platforms?: Platform[], spikes?: Spike[], enemies?: Enemy[]}} elements - The elements of the level
- * @property {{width: number, height: number}} gameField - The gameField of the level
- * @property {{name: string, condition: function: {name: string, condition: function}}} nextLevel - The next level
+ * @property {{width: number, height: number}} gameField - The game field size of the level
  * @property {{x: number, y: number}} playerPosition - The player position
- * @property {{x: number, y: number}} cameraPosition - The camera position
+ * @property {{x: number, y: number, zoom: number}} cameraPosition - The camera position and zoom
+ * @property {{background: p5.Image | p5.Element | p5.Framebuffer, foreground: p5.Image | p5.Element | p5.Framebuffer}} graphics - The graphics of the level
+ * @property {{name: string, condition: function: {name: string, condition: function}}} nextLevel - The next level
  */
 class Level {
     name;
@@ -742,42 +940,53 @@ class Level {
     gameField;
     playerPosition;
     cameraPosition;
+    graphics;
     nextLevel;
 
     /**
      *
-     * @param name {string}
-     * @param gameField {{width: number, height: number}}
-     * @param elements {function(gameField): {platforms?: Platform[], spikes?: Spike[], enemies?: Enemy[]}}
-     * @param playerPosition {function(gameField): {x: number, y: number}}
-     * @param cameraPosition {function(gameField): {x: number, y: number}}
-     * @param nextLevel {function(gameField): {name: string, condition: function}}
+     * @param name {string} The name of the level
+     * @param gameField {{width: number, height: number}} The game field size of the level
+     * @param elements {function(gameField): {platforms?: Platform[], spikes?: Spike[], enemies?: Enemy[]}} The elements of the level
+     * @param playerPosition {function(gameField): {x: number, y: number}} The player position
+     * @param cameraPosition {function(gameField): {x: number, y: number, zoom: number}} The camera position and zoom
+     * @param graphics {{background: p5.Image | p5.Element | p5.Framebuffer, foreground: p5.Image | p5.Element | p5.Framebuffer}} The background and foreground graphics of the level
+     * @param nextLevel {function(gameField): {name: string, condition: function}} The next level
      */
-    constructor(name, gameField, elements, playerPosition, cameraPosition, nextLevel = null) {
+    constructor(name, gameField, elements, playerPosition, cameraPosition, graphics, nextLevel = null) {
         this.name = name;
         this.gameField = gameField;
         this.elements = elements(this.gameField);
         this.playerPosition = playerPosition(this.gameField);
         this.cameraPosition = cameraPosition(this.gameField);
+        this.graphics = graphics;
         this.nextLevel = nextLevel;
         if (this.nextLevel !== null) this.nextLevel = nextLevel(this.gameField);
-
-
     }
 
+    /**
+     * Sets up and applies the camera effect
+     * @param player {Player} the player object
+     */
     setupCamera(player) {
-        translate(width / 2 - this.cameraPosition.x, height / 2 - this.cameraPosition.y);
+        translate(width / 2, height / 2);
         scale(this.cameraPosition.zoom * (width / this.gameField.width));
+        console.log(this.cameraPosition.zoom * (width / this.gameField.width));
         translate(
-            -constrain(player.x, width / (2 * this.cameraPosition.zoom * (width / this.gameField.width)), this.gameField.width - width / (2 * this.cameraPosition.zoom * (width / this.gameField.width))),
-            -constrain(player.y, height / (2 * this.cameraPosition.zoom * (width / this.gameField.width)), this.gameField.height - height / (2 * this.cameraPosition.zoom * (width / this.gameField.width))),
+            -constrain(player.x + this.cameraPosition.x, width / (2 * this.cameraPosition.zoom * (width / this.gameField.width)), this.gameField.width - width / (2 * this.cameraPosition.zoom * (width / this.gameField.width))),
+            -constrain(player.y + this.cameraPosition.y, height / (2 * this.cameraPosition.zoom * (width / this.gameField.width)), this.gameField.height - height / (2 * this.cameraPosition.zoom * (width / this.gameField.width))),
         );
     }
 
+    /**
+     * Draws the level
+     * @param play {boolean} whether the player should move
+     */
     draw(play = true) {
         push();
         scaleCanvas(true);
         this.setupCamera(player);
+        image(this.graphics.background, 0, 0, this.gameField.width, this.gameField.height);
 
         // Display the elements (platforms, enemies etc.)
         for (let elements in this.elements) {
@@ -799,7 +1008,8 @@ class Level {
             player.deadlyCollision(this.elements.enemies, "enemy");
             player.deadlyCollision(this.elements.spikes, "spike");
 
-            if (player.y + player.height >= this.gameField.height) {
+            if (player.y >= this.gameField.height) {
+                console.log(this.gameField.height, player.y);
                 player.kill();
             }
 
@@ -812,19 +1022,37 @@ class Level {
                 levels.get(this.nextLevel.name).setup()
             }
 
+            if (!player.onGround) {
+                player.state = "jump";
+            } else if(player.xSpeed === 0) {
+                player.state = "stand";
+            } else {
+                player.state = `run ${Math.floor(frameCount / 10) % 2 + 1}`;
+            }
+
+            if (player.xSpeed > 0) {
+                player.orientation = "right";
+            } else if (player.xSpeed < 0) {
+                player.orientation = "left";
+            }
+
             // Move player
         }
 
         // Display player
         player.display();
+        image(this.graphics.foreground, 0, 0, this.gameField.width, this.gameField.height);
         pop();
 
     }
 
+    /**
+     * Sets up the level
+     */
     setup() {
         player.x = this.playerPosition.x;
         player.y = this.playerPosition.y;
-
+        player.orientation = this.playerPosition.orientation;
     }
 }
 
@@ -832,22 +1060,33 @@ class Level {
 /**
  * Screen object
  * @property {string} name - The name of the screen
- * @property {function} display - The function to display the screen
+ * @property {function} run - The function to display the screen
  */
 class Screen {
     name;
-    display;
+    run;
+    skins = new Map([
+        ["Menu", loadImage("graphics/screens/menu.png")],
+        ["Game Over", loadImage("graphics/screens/game_over.png")],
+        ["Win", loadImage("graphics/screens/win.png")],
+    ]);
 
     /**
      *
      * @param name {string} The name of the screen
      * @param run {function} The function being run when displaying the screen
      */
-    constructor(name, run) {
+    constructor(name, run = null) {
         this.name = name;
-        this.display = () => {
-            run();
-            return this;
-        };
+        this.run = run;
     }
+
+    display() {
+        if (this.run !== null) this.run();
+        push();
+        scaleCanvas(true)
+        if (this.skins.has(this.name)) image(this.skins.get(this.name), 0, 0, width, height);
+        pop();
+        return this;
+    };
 }

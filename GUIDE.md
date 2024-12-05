@@ -111,12 +111,15 @@ static isOverlapping(player, platform) {
 ```
 ### Player-Spike
 With the overlap of the player and the spike, we need to check all the corners. We can just check if the player's bounding box is overlapping with the spike's bounding box.
+
 ```javascript
-static isOverlapping(player, spike) {
+static
+isOverlapping(player, spike)
+{
     let slope = spike.height / (spike.width / 2); // the slope of the spike's sides
 
-    for (let corner in player.corners()) { // check all the corners
-        corner = player.corners()[corner];
+    for (let corner in player.getCorners()) { // check all the corners
+        corner = player.getCorners()[corner];
 
         let top = spike.y - spike.height;
         //here, just imagine a linear function. Like f(x) = slope * x + top, 
@@ -128,7 +131,7 @@ static isOverlapping(player, spike) {
             //remember the linear function thing
             corner.y <= left &&
             corner.y >= left &&
-            corner.y >= right && 
+            corner.y >= right &&
             corner.y <= spike.y //if the player is above the spike, surely not colliding
         ) {
             return true; //if the corner is colliding
@@ -142,10 +145,13 @@ static isOverlapping(player, spike) {
 With the overlap of the player and the enemy, we need to check all the corners. We can just check if the player's bounding box is overlapping with the enemy's bounding box.
 
 Since the enemy is basically a semi-circle, we need to check if the distance between the player's corners are less than the enemy's radius. (Trigonometry, Pythagorean Theorem ⇒ $`sin^2(x)+cos^2(x)=1`$ always)
+
 ```javascript
-static isOverlapping(player, enemy) {
-    for (let corner in player.corners()) {
-        corner = player.corners()[corner];
+static
+isOverlapping(player, enemy)
+{
+    for (let corner in player.getCorners()) {
+        corner = player.getCorners()[corner];
         if (dist(corner.x, corner.y, enemy.x, enemy.y) <= enemy.height && corner.y >= enemy.y) return true;
     }
     let border = Math.sqrt(enemy.height ** 2 - (enemy.height / (enemy.y - player.y)) ** 2) //see Illustration 1 (the vertical _ . _ . _ line)
