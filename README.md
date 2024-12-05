@@ -1,38 +1,49 @@
-# HTML Template for p5.js Game Publishing
+# Guide for the game
+## Goal
+Join for an adventure to help the little furball see the aurora!
 
-This template provides a simple setup for publishing p5.js games. It includes the necessary HTML and CSS files along with a starter `game.js` file to get you started quickly.
+## Controls
+### Menu
+* **Spacebar:** Start the game
+* **G:** Guide for the game
+### Game
+* **Spacebar:** Jump _(press twice for double jump)_
+* **R:** Restart the game
+* **Esc:** Go back to the menu
+### Game Over
+* **R:** Restart the game
+* **Esc:** Go back to the menu
 
-## Getting Started
+# References
+## Tools
+* **JSDoc:** [JSDoc](https://jsdoc.app/)
+  * Used for documenting the code, to make it easier to understand for you and me
+* **Switch Case:** [W3Schools - JavaScript Switch Statement](https://www.w3schools.com/js/js_switch.asp)
+  * Used for key press handling, so that it isn't full of `if` statements
+* **Arrow Function:** [W3Schools - JavaScript Arrow Functions](https://www.w3schools.com/js/js_arrow_function.asp)
+  * `() => {}`, used in function parameters, so that I don't have to write the bulky `function` (looks much cleaner tbh)
+* **Ternary Operators:** [W3Schools - JavaScript Comparison and Logical Operators](https://www.w3schools.com/js/js_comparisons.asp)
+  * `condition ? true : false`, I just didn't want to use bulky `if` statements, if I can write them in one line
+  * Used for determining if we want to reverse the scaling for the canvas and determining the direction of the friction
+* **Class Static:** [W3Schools - JavaScript Static Methods](https://www.w3schools.com/js/js_class_static.asp)
+  * To be able to use the class methods without having to create an object of the class
+* **Default Parameter Values**: [W3Schools - JavaScript Function Parameters](https://www.w3schools.com/js/js_function_parameters.asp)
+  * `parameter = value`, it seems easier in I only have to specify the parameters that are only used in special occasions
+* **Map:** [MDN - JavaScript Map Object](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Map)
+  * Used for storing the screens and levels, so that I can use any string as keys, so that I don't have to find shortcuts for referencing them
+* **Promise:** [W3Schools - JavaScript Promises](https://www.w3schools.com/js/js_promise.asp)
+  * Canvas size calculation, to be able to use multiple return values in different places, without having to declare a new variable and call the function again
+### p5.js
+* **Load Image:** [p5.js - loadImage](https://p5js.org/reference/p5/loadImage)
+* **Image:** [p5.js - Image](https://p5js.org/reference/p5/image)
+* **Constrain:** [p5.js - constrain](https://p5js.org/reference/p5/constrain)
+## Code
+### AI
+* **GitHub Copilot Autocompletion:** Used for obvious, smaller completions (e.g. specifying the element objects, key presses)
+* **Citation 1:** [ChatGPT - Scale Canvas](https://chatgpt.com/share/6751bd73-509c-8000-9796-315ce017e062)
+* **Citation 2:** [ChatGPT - Camera Simulation](https://chatgpt.com/share/6751bc6e-16cc-8000-9eb3-b6eab3772748)
+## Help
+* **Kajsa Granström:** [GitHub - moakajsa](https://github.com/moakajsa)
+* **Bence Tuzson:** [GitHub - Bence Tuzson](https://github.com/bencetuzson)
 
-1. **Coding Your Game**
-
-   - Begin coding your game in the `game.js` file.
-   - Make sure not to rename this file unless you are confident about updating any related references.
-   - Feel free to modify the canvas size, background color, and any other settings in `game.js` — the provided code is a first starting point.
-
-2. **Changing the Browser Title**
-
-   - To change the title that appears in the browser tab, open the `index.html` file.
-   - Locate line 6:
-     ```html
-     <title>Foundations of Programming</title>
-     ```
-   - Replace **only** the text between `<title>` and `</title>` with your desired title.
-
-## Publishing Your Game on GitHub Pages
-
-1. **Committing Your Code**
-
-   - Once you've finished coding, make sure your latest version is committed to GitHub.
-
-2. **Enabling GitHub Pages**
-
-   - Go to **Settings** in your GitHub repository.
-   - On the left sidebar, click **Pages**.
-   - Under the **Branch** section, select the `main` branch from the dropdown menu, then click **Save**.
-
-3. **Waiting for Deployment**
-   - It may take a moment for GitHub Pages to deploy your site. You can check the deployment status under **Actions** in the top menu.
-   - Once deployed, you can access your game at `https://ju-nmd2024.github.io/<your-repository-name>`.
-
-Happy coding 🐹!
+![Lutyuly](https://media0.giphy.com/media/v1.Y2lkPTc5MGI3NjExaTJ4bzB6YWQ1eTV1dDB5NXZhemhrNnVxZDVuZ3kzMzU5aDhqOGpudCZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9Zw/Dh5q0sShxgp13DwrvG/giphy.gif)

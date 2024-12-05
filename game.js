@@ -1,3 +1,4 @@
+// Made by Adrienn Rátonyi and Kajsa Granström, Jönköping University, 2024
 /**
  * the player object
  * @type {Player}
@@ -53,7 +54,7 @@ let screens = new Map();
 let win = {
     level: "Aurora",
     condition: () => player.x <= levels.get(win.level).gameField.width / 2 - player.width / 2
-}
+};
 
 /**
  * the aspect ratio of the canvas
@@ -128,21 +129,21 @@ function setup() {
                     new Spike(1710, gameField.height - 450, 30, 60),
                     new Spike(1740, gameField.height - 450, 30, 60),
                 ],
-            }
+            };
         },
         (gameField) => {
             return {
                 x: 50,
                 y: gameField.height - 450,
                 orientation: "right"
-            }
+            };
         },
         (gameField) => {
             return {
                 x: 0,
                 y: -50,
                 zoom: 1.3
-            }
+            };
         },
         {
             foreground: loadImage("graphics/foregrounds/level1_foreground.png"),
@@ -152,9 +153,9 @@ function setup() {
             return {
                 name: "Level 2",
                 condition: () => player.x >= 1800
-            }
+            };
         }
-    ))
+    ));
 
     levels.set("Level 2", new Level("Level 2",
         {
@@ -186,21 +187,21 @@ function setup() {
                 enemies: [
                     new Enemy(1425, gameField.height - 400, 50, 2, 250),
                 ]
-            }
+            };
         },
         (gameField) => {
             return {
                 x: 50,
                 y: gameField.height - 600,
                 orientation: "right"
-            }
+            };
         },
         (gameField) => {
             return {
                 x: 0,
                 y: -50,
                 zoom: 1.3
-            }
+            };
         },
         {
             foreground: loadImage("graphics/foregrounds/level2_foreground.png"),
@@ -210,9 +211,9 @@ function setup() {
             return {
                 name: "Level 3",
                 condition: () => player.x <= 50 && player.y <= gameField.height - 900
-            }
+            };
         }
-    ))
+    ));
 
     levels.set("Level 3", new Level("Level 3",
         {
@@ -295,21 +296,21 @@ function setup() {
                     new Enemy(1750, gameField.height - 850, 50, 2, 250),
                     new Enemy(275, gameField.height - 850, 50, 2, 250),
                 ]
-            }
+            };
         },
         (gameField) => {
             return {
                 x: 1780,
                 y: gameField.height - 250,
                 orientation: "left"
-            }
+            };
         },
         (gameField) => {
             return {
                 x: 0,
                 y: -30,
                 zoom: 1.3
-            }
+            };
         },
         {
             foreground: loadImage("graphics/foregrounds/level3_foreground.png"),
@@ -319,9 +320,9 @@ function setup() {
             return {
                 name: "Aurora",
                 condition: () => player.x <= 20 && player.y <= gameField.height - 100
-            }
+            };
         }
-    ))
+    ));
 
     levels.set("Aurora", new Level("Aurora",
         {
@@ -333,40 +334,51 @@ function setup() {
                 platforms: [
                     new Platform(0, gameField.height - 150, gameField.width, 300)
                 ],
-            }
+            };
         },
         (gameField) => {
             return {
                 x: gameField.width - 100,
                 y: gameField.height - 200,
                 orientation: "left"
-            }
+            };
         },
         (gameField) => {
             return {
                 x: 0,
                 y: 0,
                 zoom: 1
-            }
+            };
         },
         {
             foreground: loadImage("graphics/foregrounds/aurora_foreground.png"),
             background: loadImage("graphics/backgrounds/aurora_background.png")
         }
-    ))
+    ));
 
     // Screens setup
-    screens.set("Menu", new Screen("Menu"));
+    screens.set("Menu", new Screen("Menu", {
+        background: loadImage("graphics/screens/menu.png"),
+    }));
 
-    screens.set("Game Over", new Screen("Game Over"));
+    screens.set("Guide", new Screen("Guide", {
+        background: loadImage("graphics/screens/guide.png"),
+    }));
 
-    screens.set("Win", new Screen("Win", () => {
+    screens.set("Game Over", new Screen("Game Over", {
+        background: loadImage("graphics/screens/game_over.png"),
+    }));
+
+    screens.set("Win", new Screen("Win", {
+        foreground: loadImage("graphics/screens/win.png"),
+    }, () => {
         levels.get(gameLevel).draw(false);
     }));
 
-    screens.set("Game", new Screen("Game", () => {
+    screens.set("Game", new Screen("Game",{}, () => {
         levels.get(gameLevel).draw();
     }));
+
 
 }
 
@@ -388,7 +400,7 @@ function calculateCanvasSize() {
  * scales the contents to fit the canvas
  * @param reverse {boolean} whether the canvas should be scaled back to the original
  */
-function scaleCanvas(reverse = false) {
+function scaleCanvas(reverse = false) { // based on Citation 2
     let scaleValue = min(width / baseSize.width, height / baseSize.height);
     translate(width / 2, height / 2);
     scale(reverse ? 1 / scaleValue : scaleValue);
@@ -417,7 +429,7 @@ function draw() {
     textAlign("center", "center");
     textSize(100);
     text("Loading...", width / 2, height / 2);
-    push()
+    push();
     scaleCanvas();
     screens.get(screenState).display();
     pop();
@@ -450,7 +462,15 @@ function keyPressed() {
                 case "Game":
                 case "Game Over":
                 case "Win":
+                case "Guide":
                     screenState = "Menu";
+                    break;
+            }
+            break;
+        case 71: //G
+            switch (screenState) {
+                case "Menu":
+                    screenState = "Guide";
                     break;
             }
             break;
@@ -529,7 +549,7 @@ class Player {
             topRight: {x: this.x + this.width, y: this.y},
             bottomLeft: {x: this.x, y: this.y + this.height},
             bottomRight: {x: this.x + this.width, y: this.y + this.height}
-        }
+        };
     }
 
     /**
@@ -537,28 +557,24 @@ class Player {
      */
     update() {
         // Left and right movement
-        switch (true) {
-            case keyIsDown(LEFT_ARROW):
-                this.xSpeed = -5;
-                break;
-            case keyIsDown(RIGHT_ARROW):
-                this.xSpeed = 5;
-                break;
-            default:
-                if (frictionDirection(this.xSpeed) * -this.xSpeed > friction) {
-                    this.xSpeed += frictionDirection(this.xSpeed) * friction;
+        if (keyIsDown(LEFT_ARROW)) {
+            this.xSpeed = -5;
+        } else if (keyIsDown(RIGHT_ARROW)) {
+            this.xSpeed = 5;
+        } else {
+            if (Math.abs(this.xSpeed) > friction) {
+                if (this.xSpeed > 0) {
+                    this.xSpeed -= friction;
                 } else {
-                    this.xSpeed = 0;
+                    this.xSpeed += friction;
                 }
-                break;
+            } else {
+                this.xSpeed = 0;
+            }
         }
 
         this.x += this.xSpeed;
         this.y += this.ySpeed;
-
-        function frictionDirection(speed) {
-            return speed > 0 ? -1 : 1;
-        }
     }
 
     /**
@@ -653,7 +669,7 @@ class Player {
             right: platform.x + platform.width - this.x,
             top: this.y + this.height - platform.y,
             bottom: platform.y + platform.height - this.y
-        }
+        };
 
         // position adjustment
         switch (Math.min(overlap.left, overlap.right, overlap.top, overlap.bottom)) { // the smallest overlap shows the most probable side
@@ -903,7 +919,7 @@ class Spike extends Element {
      */
     static isOverlapping(player, spike) {
         let slope = spike.height / (spike.width / 2);
-        let top = spike.y - spike.height;
+        let top = spike.y - spike.height; // the y coordinate of the top of the spike
 
         for (let corner in player.getCorners()) {
             corner = player.getCorners()[corner];
@@ -931,7 +947,7 @@ class Spike extends Element {
  * @property {{width: number, height: number}} gameField - The game field size of the level
  * @property {{x: number, y: number}} playerPosition - The player position
  * @property {{x: number, y: number, zoom: number}} cameraPosition - The camera position and zoom
- * @property {{background: p5.Image | p5.Element | p5.Framebuffer, foreground: p5.Image | p5.Element | p5.Framebuffer}} graphics - The graphics of the level
+ * @property {{background?: p5.Image | p5.Element | p5.Framebuffer, foreground?: p5.Image | p5.Element | p5.Framebuffer}} graphics - The graphics of the level
  * @property {{name: string, condition: function: {name: string, condition: function}}} nextLevel - The next level
  */
 class Level {
@@ -968,7 +984,7 @@ class Level {
      * Sets up and applies the camera effect
      * @param player {Player} the player object
      */
-    setupCamera(player) {
+    setupCamera(player) { // based on Citation 2
         translate(width / 2, height / 2);
         scale(this.cameraPosition.zoom * (width / this.gameField.width));
         console.log(this.cameraPosition.zoom * (width / this.gameField.width));
@@ -986,7 +1002,8 @@ class Level {
         push();
         scaleCanvas(true);
         this.setupCamera(player);
-        image(this.graphics.background, 0, 0, this.gameField.width, this.gameField.height);
+        if (this.graphics !== undefined && this.graphics.background !== undefined)
+            image(this.graphics.background, 0, 0, this.gameField.width, this.gameField.height);
 
         // Display the elements (platforms, enemies etc.)
         for (let elements in this.elements) {
@@ -1019,7 +1036,7 @@ class Level {
 
             if (this.nextLevel !== null && this.nextLevel.condition()) {
                 gameLevel = this.nextLevel.name;
-                levels.get(this.nextLevel.name).setup()
+                levels.get(this.nextLevel.name).setup();
             }
 
             if (!player.onGround) {
@@ -1041,7 +1058,8 @@ class Level {
 
         // Display player
         player.display();
-        image(this.graphics.foreground, 0, 0, this.gameField.width, this.gameField.height);
+        if (this.graphics !== undefined && this.graphics.foreground !== undefined)
+            image(this.graphics.foreground, 0, 0, this.gameField.width, this.gameField.height);
         pop();
 
     }
@@ -1060,33 +1078,39 @@ class Level {
 /**
  * Screen object
  * @property {string} name - The name of the screen
+ * @property {{background?: p5.Image | p5.Element | p5.Framebuffer, foreground?: p5.Image | p5.Element | p5.Framebuffer}} graphics - The graphics of the level
  * @property {function} run - The function to display the screen
  */
 class Screen {
     name;
+    graphics;
     run;
-    skins = new Map([
-        ["Menu", loadImage("graphics/screens/menu.png")],
-        ["Game Over", loadImage("graphics/screens/game_over.png")],
-        ["Win", loadImage("graphics/screens/win.png")],
-    ]);
 
     /**
      *
      * @param name {string} The name of the screen
+     * @param graphics {{background?: p5.Image | p5.Element | p5.Framebuffer, foreground?: p5.Image | p5.Element | p5.Framebuffer}} The graphics of the screen
      * @param run {function} The function being run when displaying the screen
      */
-    constructor(name, run = null) {
+    constructor(name, graphics, run = null) {
         this.name = name;
+        this.graphics = graphics;
         this.run = run;
     }
 
     display() {
-        if (this.run !== null) this.run();
         push();
-        scaleCanvas(true)
-        if (this.skins.has(this.name)) image(this.skins.get(this.name), 0, 0, width, height);
+        scaleCanvas(true);
+        if (this.graphics !== undefined && this.graphics.background !== undefined)
+            image(this.graphics.background, 0, 0, width, height);
+        if (this.run !== null) {
+            scaleCanvas();
+            this.run();
+            scaleCanvas(true);
+        }
+        if (this.graphics !== undefined && this.graphics.foreground !== undefined)
+            image(this.graphics.foreground, 0, 0, width, height);
         pop();
         return this;
-    };
+    }
 }
