@@ -10,7 +10,7 @@ let player;
  */
 let gravity = 0.8;
 
-  /**
+/**
  * the strength of the friction
  * @type {number}
  */
@@ -399,7 +399,7 @@ function scaleCanvas(reverse = false) {
  * resets the game settings for starting a new game
  */
 function resetGameSettings() { // Reset game settings
-    gameLevel = "Aurora";
+    gameLevel = "Level 1";
     screenState = "Game";
     player.alive = true;
     levels.get(gameLevel).setup();
