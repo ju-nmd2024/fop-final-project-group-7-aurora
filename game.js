@@ -317,7 +317,7 @@ function setup() {
         },
         (gameField) => {
             return {
-                name: "Aurora",
+                name: "Level 1",
                 condition: () => player.x <= 20 && player.y <= gameField.height - 100
             }
         }
