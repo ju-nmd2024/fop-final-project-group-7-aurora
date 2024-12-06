@@ -70,6 +70,15 @@ let baseSize = {};
 baseSize.width = 1920;
 baseSize.height = baseSize.width / aspectRatio;
 
+/**
+ * The number of all and loaded assets
+ * @type {{all: number, loaded: number}}
+ */
+let assets = {
+    all: 0,
+    loaded: 0
+}
+
 function setup() {
     calculateCanvasSize().then((size) => {
         createCanvas(size.width, size.height);
@@ -146,8 +155,8 @@ function setup() {
             };
         },
         {
-            foreground: loadImage("graphics/foregrounds/level1_foreground.png"),
-            background: loadImage("graphics/backgrounds/level1_background.png")
+            foreground: loadAsset("graphics/foregrounds/level1_foreground.png"),
+            background: loadAsset("graphics/backgrounds/level1_background.png")
         },
         (gameField) => {
             return {
@@ -204,8 +213,8 @@ function setup() {
             };
         },
         {
-            foreground: loadImage("graphics/foregrounds/level2_foreground.png"),
-            background: loadImage("graphics/backgrounds/level2_background.png")
+            foreground: loadAsset("graphics/foregrounds/level2_foreground.png"),
+            background: loadAsset("graphics/backgrounds/level2_background.png")
         },
         (gameField) => {
             return {
@@ -313,8 +322,8 @@ function setup() {
             };
         },
         {
-            foreground: loadImage("graphics/foregrounds/level3_foreground.png"),
-            background: loadImage("graphics/backgrounds/level3_background.png")
+            foreground: loadAsset("graphics/foregrounds/level3_foreground.png"),
+            background: loadAsset("graphics/backgrounds/level3_background.png")
         },
         (gameField) => {
             return {
@@ -351,8 +360,8 @@ function setup() {
             };
         },
         {
-            foreground: loadImage("graphics/foregrounds/aurora_foreground.png"),
-            background: loadImage("graphics/backgrounds/aurora_background.png")
+            foreground: loadAsset("graphics/foregrounds/aurora_foreground.png"),
+            background: loadAsset("graphics/backgrounds/aurora_background.png")
         }
     ));
 
@@ -361,27 +370,36 @@ function setup() {
         levels.get(gameLevel).draw();
     }));
 
-
     screens.set("Game Over", new Screen("Game Over", {
-        background: loadImage("graphics/screens/game_over.png"),
+        background: loadAsset("graphics/screens/game_over.png"),
     }));
 
     screens.set("Win", new Screen("Win", {
-        foreground: loadImage("graphics/screens/win.png"),
+        foreground: loadAsset("graphics/screens/win.png"),
     }, () => {
         levels.get(gameLevel).draw(false);
     }));
 
     screens.set("Guide", new Screen("Guide", {
-        background: loadImage("graphics/screens/guide.png"),
+        background: loadAsset("graphics/screens/guide.png"),
     }));
 
     screens.set("Menu", new Screen("Menu", {
-        background: loadImage("graphics/screens/menu.png"),
+        background: loadAsset("graphics/screens/menu.png"),
     }));
+}
 
-
-
+/**
+ * Loads an image and increases the number of loaded assets.
+ * This is needed, since GitHub's page loads the images weirdly, so the images are not loaded when the game starts.
+ * @param path {string} the path of the image
+ * @returns {p5.Image | p5.Element | p5.Framebuffer}
+ */
+function loadAsset(path) {
+    assets.all++;
+    return loadImage(path, () => {
+        assets.loaded++;
+    });
 }
 
 /**
@@ -433,49 +451,51 @@ function draw() {
     text(`Loading${".".repeat(Math.floor(frameCount / 20) % 3 + 1)}`, width / 2, height / 2);
     push();
     scaleCanvas();
-    screens.get(screenState).display();
+    if (assets.loaded >= assets.all) screens.get(screenState).display();
     pop();
 
 }
 
 function keyPressed() {
-    switch (keyCode) {
-        case 32: //SPACE
-            switch (screenState) {
-                case "Game":
-                    player.jump();
-                    break;
-                case "Menu":
-                    resetGameSettings();
-                    break;
-            }
-            break;
-        case 82: //R
-            switch (screenState) {
-                case "Game":
-                case "Game Over":
-                case "Win":
-                    resetGameSettings();
-                    break;
-            }
-            break;
-        case 27: //ESC
-            switch (screenState) {
-                case "Game":
-                case "Game Over":
-                case "Win":
-                case "Guide":
-                    screenState = "Menu";
-                    break;
-            }
-            break;
-        case 71: //G
-            switch (screenState) {
-                case "Menu":
-                    screenState = "Guide";
-                    break;
-            }
-            break;
+    if (assets.loaded >= assets.all) {
+        switch (keyCode) {
+            case 32: //SPACE
+                switch (screenState) {
+                    case "Game":
+                        player.jump();
+                        break;
+                    case "Menu":
+                        resetGameSettings();
+                        break;
+                }
+                break;
+            case 82: //R
+                switch (screenState) {
+                    case "Game":
+                    case "Game Over":
+                    case "Win":
+                        resetGameSettings();
+                        break;
+                }
+                break;
+            case 27: //ESC
+                switch (screenState) {
+                    case "Game":
+                    case "Game Over":
+                    case "Win":
+                    case "Guide":
+                        screenState = "Menu";
+                        break;
+                }
+                break;
+            case 71: //G
+                switch (screenState) {
+                    case "Menu":
+                        screenState = "Guide";
+                        break;
+                }
+                break;
+        }
     }
 }
 
@@ -504,14 +524,14 @@ class Player {
     state;
     orientation;
     skins = new Map([
-        ["stand, left", loadImage("graphics/character/character_stand_left.png")],
-        ["stand, right", loadImage("graphics/character/character_stand_right.png")],
-        ["run 1, left", loadImage("graphics/character/character_run_1_left.png")],
-        ["run 1, right", loadImage("graphics/character/character_run_1_right.png")],
-        ["run 2, left", loadImage("graphics/character/character_run_2_left.png")],
-        ["run 2, right", loadImage("graphics/character/character_run_2_right.png")],
-        ["jump, left", loadImage("graphics/character/character_jump_left.png")],
-        ["jump, right", loadImage("graphics/character/character_jump_right.png")],
+        ["stand, left", loadAsset("graphics/character/character_stand_left.png")],
+        ["stand, right", loadAsset("graphics/character/character_stand_right.png")],
+        ["run 1, left", loadAsset("graphics/character/character_run_1_left.png")],
+        ["run 1, right", loadAsset("graphics/character/character_run_1_right.png")],
+        ["run 2, left", loadAsset("graphics/character/character_run_2_left.png")],
+        ["run 2, right", loadAsset("graphics/character/character_run_2_right.png")],
+        ["jump, left", loadAsset("graphics/character/character_jump_left.png")],
+        ["jump, right", loadAsset("graphics/character/character_jump_right.png")],
     ]);
 
     /**
@@ -829,7 +849,7 @@ class Enemy extends Element {
     moveRange;
     baseX;
     skins = new Map([
-        ["default", loadImage("graphics/elements/enemy.png")]
+        ["default", loadAsset("graphics/elements/enemy.png")]
     ]);
 
     /**
@@ -890,7 +910,7 @@ class Enemy extends Element {
  */
 class Spike extends Element {
     skins = new Map([
-        ["default", loadImage("graphics/elements/spike.png")]
+        ["default", loadAsset("graphics/elements/spike.png")]
     ]);
     /**
      * Creates a spike object
