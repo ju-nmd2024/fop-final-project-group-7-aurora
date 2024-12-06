@@ -357,13 +357,10 @@ function setup() {
     ));
 
     // Screens setup
-    screens.set("Menu", new Screen("Menu", {
-        background: loadImage("graphics/screens/menu.png"),
+    screens.set("Game", new Screen("Game",{}, () => {
+        levels.get(gameLevel).draw();
     }));
 
-    screens.set("Guide", new Screen("Guide", {
-        background: loadImage("graphics/screens/guide.png"),
-    }));
 
     screens.set("Game Over", new Screen("Game Over", {
         background: loadImage("graphics/screens/game_over.png"),
@@ -375,9 +372,14 @@ function setup() {
         levels.get(gameLevel).draw(false);
     }));
 
-    screens.set("Game", new Screen("Game",{}, () => {
-        levels.get(gameLevel).draw();
+    screens.set("Guide", new Screen("Guide", {
+        background: loadImage("graphics/screens/guide.png"),
     }));
+
+    screens.set("Menu", new Screen("Menu", {
+        background: loadImage("graphics/screens/menu.png"),
+    }));
+
 
 
 }
