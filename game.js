@@ -425,10 +425,10 @@ function windowResized() {
 
 
 function draw() {
-    background(135, 206, 250); // Sky color
+    background("white");
     textAlign("center", "center");
     textSize(100);
-    text("Loading...", width / 2, height / 2);
+    text(`Loading${(Math.floor(frameCount / 10) % 3 + 1) * "."}`, width / 2, height / 2);
     push();
     scaleCanvas();
     screens.get(screenState).display();
