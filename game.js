@@ -446,12 +446,17 @@ function windowResized() {
 
 function draw() {
     background("white");
-    textAlign("center", "center");
-    textSize(100);
-    text(`Loading${".".repeat(Math.floor(frameCount / 20) % 3 + 1)}`, width / 2, height / 2);
     push();
     scaleCanvas();
-    if (assets.loaded >= assets.all) screens.get(screenState).display();
+    if (assets.loaded >= assets.all) {
+        screens.get(screenState).display();
+    } else {
+        textAlign("center", "center");
+        textSize(100);
+        text(`Loading${".".repeat(Math.floor(frameCount / 20) % 3 + 1)}`, width / 2, height / 2);
+        textSize(30);
+        text(`${Math.floor(assets.loaded/assets.all*100)}%`, width / 2, height / 2 + 75);
+    }
     pop();
 
 }
