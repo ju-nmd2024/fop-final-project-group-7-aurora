@@ -77,7 +77,7 @@ baseSize.height = baseSize.width / aspectRatio;
 let assets = {
     all: 0,
     loaded: 0
-}
+};
 
 function setup() {
     calculateCanvasSize().then((size) => {
