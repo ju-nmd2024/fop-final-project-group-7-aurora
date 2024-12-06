@@ -8,6 +8,7 @@ Join for an adventure to help the little furball see the aurora!
 * **G:** Guide for the game
 ### Game
 * **Spacebar:** Jump _(press twice for double jump)_
+* **Left Right Arrows:** Moving 
 * **R:** Restart the game
 * **Esc:** Go back to the menu
 ### Game Over
