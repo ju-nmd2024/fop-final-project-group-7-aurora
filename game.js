@@ -428,7 +428,7 @@ function draw() {
     background("white");
     textAlign("center", "center");
     textSize(100);
-    text(`Loading${".".repeat(Math.floor(frameCount / 10) % 3 + 1)}`, width / 2, height / 2);
+    text(`Loading${".".repeat(Math.floor(frameCount / 20) % 3 + 1)}`, width / 2, height / 2);
     push();
     scaleCanvas();
     screens.get(screenState).display();
