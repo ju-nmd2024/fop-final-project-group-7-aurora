@@ -79,6 +79,12 @@ let assets = {
     loaded: 0
 };
 
+/**
+ * Whether we are building the game (displays the otherwise transparent stuff, like the platforms, spikes and enemies)
+ * @type {boolean}
+ */
+let building = false;
+
 function setup() {
     calculateCanvasSize().then((size) => {
         createCanvas(size.width, size.height);
@@ -408,9 +414,9 @@ function loadAsset(path) {
  */
 function calculateCanvasSize() {
     return new Promise((setSize) => {
-        if (windowWidth / windowHeight > aspectRatio) {
+        if (windowWidth / windowHeight > aspectRatio) { // white on left-right
             setSize({width: windowHeight * aspectRatio, height: windowHeight});
-        } else {
+        } else { // white on top-bottom
             setSize({width: windowWidth, height: windowWidth / aspectRatio});
         }
     });
@@ -422,9 +428,9 @@ function calculateCanvasSize() {
  */
 function scaleCanvas(reverse = false) { // based on Citation 2
     let scaleValue = min(width / baseSize.width, height / baseSize.height);
-    translate(width / 2, height / 2);
+    translate(width / 2, height / 2); // bring to the middle
     scale(reverse ? 1 / scaleValue : scaleValue);
-    translate(-width / 2, -height / 2);
+    translate(-width / 2, -height / 2); // bring back
 }
 
 /**
@@ -747,7 +753,7 @@ class Player {
     display() {
         fill(255, 0, 0);
         image(this.skins.get(`${this.state}, ${this.orientation}`), this.x, this.y, this.width, this.height);
-        //rect(this.x, this.y, this.width, this.height);
+        if (building) rect(this.x, this.y, this.width, this.height);
     }
 }
 
@@ -834,7 +840,7 @@ class Platform extends Element {
     display() {
         noStroke();
         fill(48, 25, 52);
-        //rect(this.x, this.y, this.width, this.height);
+        if (building) rect(this.x, this.y, this.width, this.height);
     }
 }
 
@@ -880,7 +886,7 @@ class Enemy extends Element {
         fill(93, 63, 211);
         this.move();
         image(this.skins.get("default"), this.x - this.width / 2, this.y - this.height, this.width, this.height);
-        //arc(this.x, this.y, this.width, 2 * this.height, PI, 0);
+        if (building) arc(this.x, this.y, this.width, 2 * this.height, PI, 0);
     }
 
     /**
@@ -935,7 +941,7 @@ class Spike extends Element {
         noStroke();
         fill(255, 0, 0);
         image(this.skins.get("default"), this.x - this.width / 2, this.y - this.height, this.width, this.height);
-        //triangle(this.x - this.width / 2, this.y, this.x, this.y - this.height, this.x + this.width / 2, this.y);
+        if (building) triangle(this.x - this.width / 2, this.y, this.x, this.y - this.height, this.x + this.width / 2, this.y);
     }
 
     /**
@@ -951,12 +957,15 @@ class Spike extends Element {
         for (let corner in player.getCorners()) {
             corner = player.getCorners()[corner];
 
-            let left = -slope * (corner.x - spike.x) + top; // Left slope equation
-            let right = slope * (corner.x - spike.x) + top; // Right slope equation
+            // calculating the y position over which the player's corner is inside the spike
+            let left = slope * (corner.x - spike.x) + top; // Left side equation => f(x) = slope * x + top_y_position => y (x is the x pos of the corner relative to the spike's x pos)
+            let right = -slope * (corner.x - spike.x) + top; // Right side equation => f(x) = -slope * x + top_y_position => y (x is the x pos of the corner relative to the spike's x pos)
 
             if (
+                // between left-right
                 corner.y >= left &&
                 corner.y >= right &&
+                // between top-bottom
                 corner.y <= spike.y &&
                 corner.y >= top
             ) {
@@ -1014,7 +1023,6 @@ class Level {
     setupCamera(player) { // based on Citation 2
         translate(width / 2, height / 2);
         scale(this.cameraPosition.zoom * (width / this.gameField.width));
-        console.log(this.cameraPosition.zoom * (width / this.gameField.width));
         translate(
             -constrain(player.x + this.cameraPosition.x, width / (2 * this.cameraPosition.zoom * (width / this.gameField.width)), this.gameField.width - width / (2 * this.cameraPosition.zoom * (width / this.gameField.width))),
             -constrain(player.y + this.cameraPosition.y, height / (2 * this.cameraPosition.zoom * (width / this.gameField.width)), this.gameField.height - height / (2 * this.cameraPosition.zoom * (width / this.gameField.width))),
@@ -1053,7 +1061,6 @@ class Level {
             player.deadlyCollision(this.elements.spikes, "spike");
 
             if (player.y >= this.gameField.height) {
-                console.log(this.gameField.height, player.y);
                 player.kill();
             }
 
@@ -1079,8 +1086,6 @@ class Level {
             } else if (player.xSpeed < 0) {
                 player.orientation = "left";
             }
-
-            // Move player
         }
 
         // Display player
