@@ -426,7 +426,7 @@ function calculateCanvasSize() {
  * scales the contents to fit the canvas
  * @param reverse {boolean} whether the canvas should be scaled back to the original
  */
-function scaleCanvas(reverse = false) { // based on Citation 2
+function scaleCanvas(reverse = false) { // based on Citation 1
     let scaleValue = min(width / baseSize.width, height / baseSize.height);
     translate(width / 2, height / 2); // bring to the middle
     scale(reverse ? 1 / scaleValue : scaleValue);
@@ -454,12 +454,12 @@ function draw() {
     background("white");
     push();
     scaleCanvas();
-    if (assets.loaded >= assets.all) {
+    if (assets.loaded === assets.all) { // all assets are loaded
         screens.get(screenState).display();
     } else {
         textAlign("center", "center");
         textSize(100);
-        text(`Loading${".".repeat(Math.floor(frameCount / 20) % 3 + 1)}`, width / 2, height / 2);
+        text(`Loading${".".repeat(Math.floor(frameCount / 20) % 3 + 1)}`, width / 2, height / 2); // Loading animation (additional dots every 20 frames)
         textSize(30);
         text(`${Math.floor(assets.loaded/assets.all*100)}%`, width / 2, height / 2 + 75);
     }
@@ -468,7 +468,7 @@ function draw() {
 }
 
 function keyPressed() {
-    if (assets.loaded >= assets.all) {
+    if (assets.loaded === assets.all) {
         switch (keyCode) {
             case 32: //SPACE
                 switch (screenState) {
@@ -606,6 +606,7 @@ class Player {
             }
         }
 
+        // updating the player's position
         this.x += this.xSpeed;
         this.y += this.ySpeed;
     }
@@ -664,7 +665,7 @@ class Player {
     /**
      * Checks if the player is colliding with any deadly element of a certain type
      * @param elements {Element[]} the elements to check collision with
-     * @param type {string} the type of the element
+     * @param type {"spike" | "enemy"} the type of the element
      */
     deadlyCollision(elements, type) {
         if (elements instanceof Array) for (let element of elements) {
