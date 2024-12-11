@@ -1,6 +1,6 @@
-// Made by Adrienn Rátonyi and Kajsa Granström, Jönköping University, 2024
+// Made by Adrienn Rátonyi Jönköping University, 2024
 /**
- * the player object
+ * the player object    //documentations: https://jsdoc.app
  * @type {Player}
  */
 let player;
@@ -9,7 +9,7 @@ let player;
  * the strength of the gravity
  * @type {number}
  */
-let gravity = 0.8;
+let gravity = 0.8;  //Kajsa Granström helped me to start the project, some of the physics part was made by her - gravity, friction, jumpStrength
 
 /**
  * the strength of the friction
@@ -39,8 +39,8 @@ let screenState = "Menu";
  * the collection of the levels
  * @type {Map<string, Level>}
  */
-let levels = new Map();
-
+let levels = new Map();   // map: https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Map
+                                            //Bence Tuzson recommended it
 /**
  * the collection of the screens
  * @type {Map<string, Screen>}
@@ -172,7 +172,7 @@ function setup() {
         }
     ));
 
-    levels.set("Level 2", new Level("Level 2",
+    levels.set("Level 2", new Level("Level 2",  //GitHub Copilot autocompleted what I wanted to write based on level 1, then I pasted the elements
         {
             width: 1879,
             height: 1200
@@ -403,7 +403,7 @@ function setup() {
  */
 function loadAsset(path) {
     assets.all++;
-    return loadImage(path, () => {
+    return loadImage(path, () => {    //loadImage:https://p5js.org/reference/p5/loadImage/
         assets.loaded++;
     });
 }
@@ -413,7 +413,7 @@ function loadAsset(path) {
  * @returns {Promise<{width: number, height: number}>}
  */
 function calculateCanvasSize() {
-    return new Promise((setSize) => {
+    return new Promise((setSize) => {    //promise: https://www.w3schools.com/js/js_promise.asp, Bence Tuzson recommended it
         if (windowWidth / windowHeight > aspectRatio) { // white on left-right
             setSize({width: windowHeight * aspectRatio, height: windowHeight});
         } else { // white on top-bottom
@@ -426,10 +426,10 @@ function calculateCanvasSize() {
  * scales the contents to fit the canvas
  * @param reverse {boolean} whether the canvas should be scaled back to the original
  */
-function scaleCanvas(reverse = false) { // based on Citation 1
+function scaleCanvas(reverse = false) { // scaling the canvas: https://chatgpt.com/share/6751bd73-509c-8000-9796-315ce017e062
     let scaleValue = min(width / baseSize.width, height / baseSize.height);
     translate(width / 2, height / 2); // bring to the middle
-    scale(reverse ? 1 / scaleValue : scaleValue);
+    scale(reverse ? 1 / scaleValue : scaleValue); // ternary operators: https://www.w3schools.com/js/js_comparisons.asp
     translate(-width / 2, -height / 2); // bring back
 }
 
@@ -467,9 +467,9 @@ function draw() {
 
 }
 
-function keyPressed() {
-    if (assets.loaded === assets.all) {
-        switch (keyCode) {
+function keyPressed() {               // switch case: https://www.w3schools.com/js/js_switch.asp
+    if (assets.loaded === assets.all) {     //autocompletion was used for obvious things because I was lazy to write
+        switch (keyCode) {                  //not everything!! just some of the lines
             case 32: //SPACE
                 switch (screenState) {
                     case "Game":
@@ -655,6 +655,8 @@ class Player {
      * and if so, it adjusts the player's position to be outside the platform.
      * @param platforms {Platform[]} the platforms in the level
      */
+    //Bence Tuzson helped me with the collision detection. He helped me with the brainstorm/theory part, the spike & enemy was difficult
+
     platformCollisionAdjustAll(platforms) {
         for (let platform of platforms) {
             if (this.checkCollision(platform, "platform")) this.platformCollisionAdjust(platform);
@@ -668,7 +670,7 @@ class Player {
      * @param type {"spike" | "enemy"} the type of the element
      */
     deadlyCollision(elements, type) {
-        if (elements instanceof Array) for (let element of elements) {
+        if (elements instanceof Array) for (let element of elements) {          //instanceof: https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Operators/instanceof
             if (this.checkCollision(element, type)) {
                 player.kill();
             }
@@ -744,14 +746,14 @@ class Player {
      * @param gameField {{width: number, height: number}}
      */
     borderAdjust(gameField) {
-        this.x = constrain(this.x, 0, gameField.width - this.width);
+        this.x = constrain(this.x, 0, gameField.width - this.width);  //constrain: https://p5js.org/reference/p5/constrain/
         this.y = constrain(this.y, 0, gameField.height);
     }
 
     /**
      * Displays the player
      */
-    display() {
+    display() {                 //image: https://p5js.org/reference/p5/image/
         fill(255, 0, 0);
         image(this.skins.get(`${this.state}, ${this.orientation}`), this.x, this.y, this.width, this.height);
         if (building) rect(this.x, this.y, this.width, this.height);
@@ -778,7 +780,7 @@ class Element {
      * @param width {number} the width of the element
      * @param height {number} the height of the element
      */
-    constructor(x, y, width, height) {
+    constructor(x, y, width, height) {  //autocompletion because I was lazy :')
         this.x = x;
         this.y = y;
         this.width = width;
@@ -805,7 +807,7 @@ class Element {
      * @param element {Element} the element object
      * @returns {boolean}
      */
-    static isOverlapping(player, element) {
+    static isOverlapping(player, element) {  //static: https://www.w3schools.com/js/js_class_static.asp
         return (
             player.y <= element.y + element.height &&
             player.y + player.height >= element.y &&
@@ -951,6 +953,8 @@ class Spike extends Element {
      * @param spike {Spike} the spike object
      * @returns {boolean} whether the player is colliding with the spike
      */
+
+    //Theory part by Bence Tuzson
     static isOverlapping(player, spike) {
         let slope = spike.height / (spike.width / 2);
         let top = spike.y - spike.height; // the y coordinate of the top of the spike
@@ -987,6 +991,8 @@ class Spike extends Element {
  * @property {{background?: p5.Image | p5.Element | p5.Framebuffer, foreground?: p5.Image | p5.Element | p5.Framebuffer}} graphics - The graphics of the level
  * @property {{name: string, condition: function: {name: string, condition: function}}} nextLevel - The next level
  */
+
+
 class Level {
     name;
     elements;
@@ -1021,7 +1027,7 @@ class Level {
      * Sets up and applies the camera effect
      * @param player {Player} the player object
      */
-    setupCamera(player) { // based on Citation 2
+    setupCamera(player) { //https://chatgpt.com/share/6751bc6e-16cc-8000-9eb3-b6eab3772748
         translate(width / 2, height / 2);
         scale(this.cameraPosition.zoom * (width / this.gameField.width));
         translate(
